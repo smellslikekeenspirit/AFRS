@@ -1,6 +1,7 @@
 # Default ignored files
 /workspace.xml
-/misc.xml
 /modules.xml
+/AFRS.iml
+/misc.xml
 /uiDesigner.xml
 /vcs.xml
