@@ -8,29 +8,29 @@ public class RequestHandler {
     // private Database database;
 
     public RequestHandler(/* Database db*/) {
-        requestParser = new RequestParser();
-        partialRequests = "";
+        this.requestParser = new RequestParser();
+        this.partialRequests = "";
         // database = db;
     }
 
     public void setState(IRequestHandlerState newState) {
-        state = newState;
+        this.state = newState;
     }
 
     public void setStrategy(IRequestHandlerStrategy newStrategy) {
-        strategy = newStrategy;
+        this.strategy = newStrategy;
     }
 
     public void addPartialRequest(String request) {
-        partialRequests += request;
+        this.partialRequests += request;
     }
 
     public void clearPartialRequests() {
-        partialRequests = "";
+        this.partialRequests = "";
     }
 
     public String executeStrategy(String request) {
-        return state.executeStrategy(request);
+        return this.state.executeStrategy(request /*, this.database*/);
     }
 
 
