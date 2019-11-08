@@ -1,2 +1,5 @@
 # Default ignored files
 /workspace.xml
+/vcs.xml
+/modules.xml
+/AFRS.iml
