@@ -1,16 +1,21 @@
 package Controller;
+import Model.Database;
 
 public class RequestHandler {
     private RequestParser requestParser;
     private IRequestHandlerStrategy strategy;
     private String partialRequests;
     private IRequestHandlerState state;
-    // private Database database;
+    private Database database;
 
-    public RequestHandler(/* Database db*/) {
+    public RequestHandler( Database db ) {
         this.requestParser = new RequestParser();
         this.partialRequests = "";
-        // database = db;
+        this.database = db;
+    }
+
+    public String handleRequest(String request) {
+        return null;
     }
 
     public void setState(IRequestHandlerState newState) {
@@ -25,13 +30,15 @@ public class RequestHandler {
         this.partialRequests += request;
     }
 
+    public String getPartialRequests() {
+        return this.partialRequests;
+    }
+
     public void clearPartialRequests() {
         this.partialRequests = "";
     }
 
     public String executeStrategy(String request) {
-        return this.state.executeStrategy(request /*, this.database*/);
+        return null;
     }
-
-
 }

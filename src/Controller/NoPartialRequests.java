@@ -2,7 +2,6 @@ package Controller;
 
 public class NoPartialRequests implements IRequestHandlerState {
     @Override
-    public String executeStrategy(String request) {
+    public String modifyRequest(String request, RequestHandler requestHandler) {
         return null;
-    }
-}
+    }}

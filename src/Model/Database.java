@@ -23,9 +23,8 @@ public class Database {
     public boolean reserveFlight(){
         return true;
     }
-
+    
     public boolean deleteReservation(){
         return true;
     }
-
 }
