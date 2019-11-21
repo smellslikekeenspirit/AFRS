@@ -1,8 +1,10 @@
-package Controller;
+package Controller.Strategies;
+
+import Controller.RequestHandler;
 
 public class DeleteReservation implements IRequestHandlerStrategy {
     @Override
-    public String handleRequest(String request) {
+    public String handleRequest(String request, RequestHandler requestHandler) {
         return null;
     }
 
