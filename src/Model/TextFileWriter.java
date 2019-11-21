@@ -1,7 +1,11 @@
+/*
+ * @author: Prionti Nasir
+ */
+
 package Model;
 
 import java.io.*;
-import java.util.ArrayList;
+
 
 public class TextFileWriter {
 
@@ -12,6 +16,7 @@ public class TextFileWriter {
     }
 
     public void writeToTextFile(){
+        // do we write the db to a new txt file and save it as db text
 
     }
 }
