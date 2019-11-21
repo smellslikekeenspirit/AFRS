@@ -1,4 +1,7 @@
 package Controller;
+import Controller.States.IRequestHandlerState;
+import Controller.States.NoPartialRequests;
+import Controller.Strategies.IRequestHandlerStrategy;
 import Model.Database;
 
 public class RequestHandler {
@@ -12,10 +15,19 @@ public class RequestHandler {
         this.requestParser = new RequestParser();
         this.partialRequests = "";
         this.database = db;
+        this.state = new NoPartialRequests();
     }
 
     public String handleRequest(String request) {
-        return null;
+        // modify the request based on previous partial requests
+        request = this.state.modifyRequest(request, this);
+
+        // let the request parser do some formatting and choose the
+        // handling strategy based on the request
+        request = this.requestParser.parseRequest(request, this);
+
+        // execute the strategy and return the result message
+        return executeStrategy(request);
     }
 
     public void setState(IRequestHandlerState newState) {
@@ -38,7 +50,9 @@ public class RequestHandler {
         this.partialRequests = "";
     }
 
+    public Database getDatabase() { return this.database; }
+
     public String executeStrategy(String request) {
-        return null;
+        return this.strategy.handleRequest(request, this);
     }
 }
