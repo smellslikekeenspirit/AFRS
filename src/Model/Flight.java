@@ -7,14 +7,26 @@ public class Flight {
     private String departureTime;
     private String arrivalTime;
     private int flightNum;
+    private float price;
 
     public Flight(String origin, String destination, String departureTime,
                   String arrivalTime, int flightNum){
+        setFields(origin, destination, departureTime, arrivalTime, flightNum, 0);
+    }
+
+    public Flight(String origin, String destination, String departureTime,
+                  String arrivalTime, int flightNum, float price){
+        setFields(origin, destination, departureTime, arrivalTime, flightNum, price);
+    }
+
+    private void setFields(String origin, String destination, String departureTime,
+                           String arrivalTime, int flightNum, float price){
         this.origin = origin;
         this.destination = destination;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.flightNum = flightNum;
+        this.price = price;
     }
 
     public String getOrigin() {
@@ -55,6 +67,14 @@ public class Flight {
 
     public void setFlightNum(int flightNum) {
         this.flightNum = flightNum;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 
 }

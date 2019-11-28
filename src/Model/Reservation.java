@@ -2,22 +2,12 @@ package Model;
 
 public class Reservation {
 
-    private int id;
     private String passenger;
     private Itinerary itinerary;
 
-    public Reservation(int id, String passenger, Itinerary itinerary){
-        this.id = id;
+    public Reservation(String passenger, Itinerary itinerary){
         this.passenger = passenger;
         this.itinerary = itinerary;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getPassenger() {
@@ -34,6 +24,14 @@ public class Reservation {
 
     public void setItinerary(Itinerary itinerary) {
         this.itinerary = itinerary;
+    }
+
+    public String getOrigin(){
+        return itinerary.getOrigin();
+    }
+
+    public String getDestination(){
+        return itinerary.getDestination();
     }
 
 }

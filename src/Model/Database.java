@@ -1,7 +1,5 @@
 package Model;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -18,21 +16,46 @@ public class Database {
     private static String FILE_DELIMITER = ",";
 
     /**
+     * file for storing reservations. each line contains one reservation
+     * with the following format:
+     * passenger; n{;itinerary}{0..n}
+     *
+     * passenger is the passenger name
+     * n is the number of reservations for the passenger
+     * itinerary in the format described in the SRS document
+     */
+    private static String RESERVATION_FILENAME = "reservations.txt";
+    private static String RESERVATION_FILE_DELIMITER = ";";
+
+    /**
      * maps the airport code to the airport
      */
     private Map<String, Airport> airports;
 
     /**
+     * maps a (origin, destination) tuple to flights that
+     * match the tuple pair
+     */
+    private Map<FlightKey, List<Flight>> flights;
+
+    /**
+     * maps a passenger to their reservations
+     */
+    private Map<String, List<Reservation>> reservations;
+
+    /**
      * @throws Exception if setting up the database has failed
      */
     public Database() throws Exception{
-        registerAirports();
+        uploadAirports();
+        uploadFlights();
+        uploadReservations();
     }
 
     /**
      * @throws IOException if parsing the cities file failed
      */
-    private void registerAirports() throws Exception{
+    private void uploadAirports() throws Exception{
         airports = new HashMap<>();
 
         //first get the airport codes and their city names
@@ -113,23 +136,149 @@ public class Database {
         }
     }
 
-    public ArrayList<Itinerary> getLastFlightInfo() {
-        return lastFlightInfo;
+    private void uploadFlights() throws Exception{
+        flights = new HashMap<>();
+
+        textFileReader = new TextFileReader(TTA_FLIGHTS_FILENAME);
+
+        ArrayList<String> lines = textFileReader.readTextFile();
+
+        for(String line: lines){
+            String[] lineTokens = line.split(FILE_DELIMITER);
+            String origin = lineTokens[0];
+            String destination = lineTokens[1];
+            String departureTime = lineTokens[2];
+            String arrivalTime = lineTokens[3];
+            int flightNumber = Integer.parseInt(lineTokens[4]);
+            float airFare = Float.parseFloat(lineTokens[5]);
+
+            Flight flight = new Flight(origin, destination, departureTime, arrivalTime, flightNumber, airFare);
+            FlightKey flightKey = new FlightKey(origin, destination);
+
+            if(flights.containsKey(flightKey)){
+                List<Flight> flightList = flights.get(flightKey);
+                flightList.add(flight);
+            }
+            else{
+                List<Flight> newFlightList = new ArrayList<>();
+                newFlightList.add(flight);
+                flights.put(flightKey, newFlightList);
+            }
+        }
     }
 
-    public ArrayList<Reservation> getReservationInfo(){
+    private void uploadReservations() throws Exception{
+        reservations = new HashMap<>();
+
+        textFileReader = new TextFileReader(RESERVATION_FILENAME);
+        List<String> lines = textFileReader.readTextFile();
+
+        for(String line: lines){
+            String[] lineTokens = line.split(RESERVATION_FILE_DELIMITER);
+            String passenger = lineTokens[0];
+            int numReservations = Integer.parseInt(lineTokens[1]);
+
+            for(int i=2; i<2+numReservations; i++){
+                String[] singleItineraryTokens = lineTokens[i].split(FILE_DELIMITER);
+                float itineraryPrice = Float.parseFloat(singleItineraryTokens[0]);
+                int numFlights = Integer.parseInt(singleItineraryTokens[1]);
+
+                List<Flight> itineraryFlights = new ArrayList<>();
+                for(int j=0; j<numFlights; j++){
+                    int offset = 2*j;
+                    int flightNumber = Integer.parseInt(singleItineraryTokens[offset+2]);
+                    String origin = singleItineraryTokens[offset+3];
+                    String departureTime = singleItineraryTokens[offset+4];
+                    String destination = singleItineraryTokens[offset+5];
+                    String arrivalTime = singleItineraryTokens[offset+6];
+
+                    Flight flight = new Flight(origin, destination, departureTime, arrivalTime, flightNumber);
+                    itineraryFlights.add(flight);
+                }
+
+                Itinerary currentItinerary = new Itinerary(itineraryPrice, itineraryFlights);
+                Reservation currentReservation = new Reservation(passenger, currentItinerary);
+
+                if(reservations.containsKey(passenger)){
+                    List<Reservation> reservationList = reservations.get(passenger);
+                    reservationList.add(currentReservation);
+                }
+                else{
+                    List<Reservation> newReservationList = new ArrayList<>();
+                    newReservationList.add(currentReservation);
+                    reservations.put(passenger, newReservationList);
+                }
+            }
+
+        }
+    }
+
+    public List<Itinerary> getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
+        FlightKey flightKey = new FlightKey(origin, destination);
+
+        List<Flight> flightList;
+        if(flights.containsKey(flightKey)){
+            flightList = flights.get(flightKey);
+        }
+        else{
+            flightList = new ArrayList<>();
+        }
+
         return null;
     }
 
-    public ArrayList<Airport> getAirportInfo(){
-        return null;
+    public List<Reservation> getReservationInfo(String passenger, String origin, String destination){
+        if(!reservations.containsKey(passenger)){
+            return new ArrayList<>();
+        }
+
+        List<Reservation> reservationInfo = new ArrayList<>();
+
+        List<Reservation> passengerReservations = reservations.get(passenger);
+        for(Reservation reservation: passengerReservations){
+            if(reservation.getOrigin().equals(origin) &&
+               reservation.getDestination().equals(destination)){
+                reservationInfo.add(reservation);
+            }
+        }
+
+        return passengerReservations;
     }
 
-    public boolean reserveFlight(){
+    public Airport getAirportInfo(String airportCode){
+        if(airports.containsKey(airportCode)){
+            return airports.get(airportCode);
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    public boolean reserveFlight(int id, String passenger){
         return true;
     }
 
-    public boolean deleteReservation(){
+    public boolean deleteReservation(String passenger, String origin, String destination){
+        if(!reservations.containsKey(passenger)){
+            return false;
+        }
+
+        List<Reservation> passengerReservations = reservations.get(passenger);
+        if(passengerReservations.size() == 0){
+            return false;
+        }
+
+        int reservationIndex = 0;
+        for(Reservation reservation: passengerReservations){
+            if(reservation.getOrigin().equals(origin) && reservation.getDestination().equals(destination)){
+                break;
+            }
+            reservationIndex++;
+        }
+
+        passengerReservations.remove(reservationIndex);
+
         return true;
     }
 }

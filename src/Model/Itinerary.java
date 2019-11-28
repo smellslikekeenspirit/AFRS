@@ -1,39 +1,51 @@
 package Model;
 
+import java.util.List;
+
 public class Itinerary {
 
     private float price;
-    private int id;
-    private Flight flight;
+    private int numFlights;
+    private List<Flight> flights;
 
-    public Itinerary(float price, int id, Flight flight){
+    public Itinerary(float price, List<Flight> flights){
         this.price = price;
-        this.id = id;
-        this.flight = flight;
+        this.flights = flights;
+        this.numFlights = flights.size();
+    }
+
+    public Itinerary(List<Flight> flights){
+        this.flights = flights;
+        numFlights = flights.size();
+        price = 0;
+        for(Flight flight: flights){
+            price += flight.getPrice();
+        }
+    }
+
+    public int getNumFlights(){
+        return numFlights;
     }
 
     public float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public String getOrigin(){
+        if(numFlights > 0){
+            return flights.get(0).getOrigin();
+        }
+        else{
+            return null;
+        }
     }
 
-    public int getId() {
-        return id;
+    public String getDestination(){
+        if(numFlights > 0){
+            return flights.get(numFlights-1).getDestination();
+        }
+        else{
+            return null;
+        }
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Flight getFlight() {
-        return flight;
-    }
-
-    public void setFlight(Flight flight) {
-        this.flight = flight;
-    }
-
 }
