@@ -3,6 +3,7 @@ package Controller.Strategies;
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
 import Model.Database;
+import Model.Responses.Response;
 
 public class ReserveFlight implements IRequestHandlerStrategy {
     @Override
@@ -22,21 +23,13 @@ public class ReserveFlight implements IRequestHandlerStrategy {
         String passenger = parameters[2];
 
         Database database = requestHandler.getDatabase();
-
-        // should probably return a string so that if it fails we know if
-        // it's an invalid id or a duplicate reservation
-        Boolean successful = database.reserveFlight(/*id, passenger*/);
-
-        return formatResponse(successful);
+        Response response = database.reserveFlight(id, passenger);
+        return formatResponse(response);
     }
 
     @Override
     public String formatResponse(Object response) {
-        if((Boolean) response) {
-            return "reserve, successful";
-        }
-        else {
-            return "error, duplicate reservation"; // could be invalid id too
-        }
+        Response convertedResponse = (Response) response;
+        return convertedResponse.getMessage();
     }
 }

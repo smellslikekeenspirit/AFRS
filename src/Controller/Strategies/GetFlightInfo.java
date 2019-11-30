@@ -6,6 +6,8 @@ import Model.Flight;
 import Model.Itinerary;
 import Model.Database;
 import java.util.ArrayList;
+import Model.Responses.FlightInfoResponse;
+import Model.SortOrder;
 
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
 
     private final int DEFAULT_CONNECTION_LIMIT = 2;
     private final String DEFAULT_SORT_ORDER = "departure";
+    private final SortOrder DEFAULT_ENUM_SORT_ORDER = SortOrder.DEPARTURE;
 
     @Override
     public String handleRequest(String request, RequestHandler requestHandler) {
@@ -58,12 +61,23 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
             }
         }
 
-        Database database = requestHandler.getDatabase();
+        // convert string sort order to enumeration used by database
+        SortOrder enumSortOrder = DEFAULT_ENUM_SORT_ORDER;
+        switch(sortOrder) {
+            case "departure":
+                enumSortOrder = SortOrder.DEPARTURE;
+                break;
+            case "arrival":
+                enumSortOrder = SortOrder.ARRIVAL;
+                break;
+            case "airfare":
+                enumSortOrder = SortOrder.AIRFARE;
+                break;
+        }
 
-        // note - how do we know if origin or destination were invalid?
-        // there should be a getFlightInfo() method
-        // ArrayList<Itinerary> flightInfo = database.getFlightInfo(/*origin, destination, connectionLimit, sortOrder*/);
-        return formatResponse(null/*flightInfo*/);
+        Database database = requestHandler.getDatabase();
+        FlightInfoResponse response = database.getFlightInfo(origin, destination, connectionLimit, enumSortOrder);
+        return formatResponse(response);
     }
 
     @Override

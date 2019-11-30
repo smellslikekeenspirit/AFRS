@@ -2,6 +2,7 @@ package Model;
 
 import java.io.IOException;
 import java.util.*;
+import Model.Responses.*;
 
 public class Database {
 
@@ -213,7 +214,19 @@ public class Database {
         }
     }
 
-    public List<Itinerary> getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
+    // helper method to validate requests
+    private Boolean airportCodeExists(String airportCode) {
+        Boolean exists = false;
+        for(String code : airports.keySet()) {
+            if(code == airportCode) {
+                exists = true;
+                break;
+            }
+        }
+        return exists;
+    }
+
+    public FlightInfoResponse getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
         FlightKey flightKey = new FlightKey(origin, destination);
 
         List<Flight> flightList;
@@ -227,12 +240,21 @@ public class Database {
         return null;
     }
 
-    public List<Reservation> getReservationInfo(String passenger, String origin, String destination){
-        if(!reservations.containsKey(passenger)){
-            return new ArrayList<>();
-        }
-
+    public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){
         List<Reservation> reservationInfo = new ArrayList<>();
+
+        Boolean originExists = airportCodeExists(origin);
+        Boolean destinationExists = airportCodeExists(destination);
+
+        if(!originExists) {
+            return new ReservationInfoResponse("error, unknown origin", null);
+        }
+        if(!destinationExists) {
+            return new ReservationInfoResponse("error, unknown destination", null);
+        }
+        if(!reservations.containsKey(passenger)){
+            return new ReservationInfoResponse("", reservationInfo);
+        }
 
         List<Reservation> passengerReservations = reservations.get(passenger);
         for(Reservation reservation: passengerReservations){
@@ -242,31 +264,32 @@ public class Database {
             }
         }
 
-        return passengerReservations;
+        return new ReservationInfoResponse("successful", reservationInfo);
     }
 
-    public Airport getAirportInfo(String airportCode){
+    public AirportInfoResponse getAirportInfo(String airportCode){
         if(airports.containsKey(airportCode)){
-            return airports.get(airportCode);
+            Airport airport = airports.get(airportCode);
+            return new AirportInfoResponse("successful", airport);
         }
         else{
-            return null;
+            return new AirportInfoResponse("error, unknown airport", null);
         }
     }
 
 
-    public boolean reserveFlight(int id, String passenger){
-        return true;
+    public Response reserveFlight(int id, String passenger){
+        return new Response("reserve, successful");
     }
 
-    public boolean deleteReservation(String passenger, String origin, String destination){
+    public Response deleteReservation(String passenger, String origin, String destination){
         if(!reservations.containsKey(passenger)){
-            return false;
+            return new Response("error, reservation not found");
         }
 
         List<Reservation> passengerReservations = reservations.get(passenger);
         if(passengerReservations.size() == 0){
-            return false;
+            return new Response("error, reservation not found");
         }
 
         int reservationIndex = 0;
@@ -277,8 +300,12 @@ public class Database {
             reservationIndex++;
         }
 
+        if(reservationIndex == passengerReservations.size()) {
+            return new Response("error, reservation not found");
+        }
+
         passengerReservations.remove(reservationIndex);
 
-        return true;
+        return new Response("delete, successful");
     }
 }

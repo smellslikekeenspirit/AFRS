@@ -43,6 +43,8 @@ public class Airport {
         return code;
     }
 
+    public String getName() { return cityName; }
+
     public int getDelay() {
         return delay;
     }

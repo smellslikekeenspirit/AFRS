@@ -5,7 +5,9 @@ import Controller.States.NoPartialRequests;
 import Model.Itinerary;
 import Model.Reservation;
 import Model.Database;
-import java.util.ArrayList;
+import Model.Flight;
+import java.util.List;
+import Model.Responses.ReservationInfoResponse;
 
 
 public class GetReservationInfo implements IRequestHandlerStrategy {
@@ -30,12 +32,41 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
         }
 
         Database database = requestHandler.getDatabase();
-        ArrayList<Reservation> reservations = database.getReservationInfo(/*passenger, origin, destination*/);
-        return formatResponse(reservations);
+        ReservationInfoResponse response = database.getReservationInfo(passenger, origin, destination);
+        return formatResponse(response);
     }
 
     @Override
     public String formatResponse(Object response) {
-        return null;
+        ReservationInfoResponse reservationInfoResponse = (ReservationInfoResponse) response;
+        List<Reservation> reservations = reservationInfoResponse.getReservationInfo();
+        if(reservations == null) {
+            return reservationInfoResponse.getMessage();
+        }
+        Integer numReservations = reservations.size();
+        String reservationInfo = "retrieve," + Integer.toString(numReservations) + "\n";
+        for(int i = 0; i < numReservations; i++) {
+            Reservation reservation = reservations.get(i);
+            Itinerary itinerary = reservation.getItinerary();
+            Integer numFlights = itinerary.getNumFlights();
+            String price = Float.toString(itinerary.getPrice());
+            reservationInfo += price + "," + Integer.toString(numFlights);
+            List<Flight> flights = itinerary.getFlights();
+            Integer flightNum = 1;
+            for(Flight flight : flights) {
+                String origin = flight.getOrigin();
+                String departure = flight.getDepartureTime();
+                String destination = flight.getDestination();
+                String arrival = flight.getArrivalTime();
+                reservationInfo += "," + Integer.toString(flightNum);
+                reservationInfo += "," + origin;
+                reservationInfo += "," + departure;
+                reservationInfo += "," + destination;
+                reservationInfo += "," + arrival;
+                flightNum++;
+            }
+            reservationInfo += "\n";
+        }
+        return reservationInfo;
     }
 }

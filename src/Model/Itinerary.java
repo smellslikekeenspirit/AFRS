@@ -23,6 +23,8 @@ public class Itinerary {
         }
     }
 
+    public List<Flight> getFlights() { return flights; }
+
     public int getNumFlights(){
         return numFlights;
     }

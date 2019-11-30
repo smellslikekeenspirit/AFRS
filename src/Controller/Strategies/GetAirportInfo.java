@@ -3,8 +3,8 @@ package Controller.Strategies;
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
 import Model.Database;
-import java.util.ArrayList;
 import Model.Airport;
+import Model.Responses.AirportInfoResponse;
 
 public class GetAirportInfo implements IRequestHandlerStrategy {
     @Override
@@ -17,17 +17,21 @@ public class GetAirportInfo implements IRequestHandlerStrategy {
         }
         String airport = parameters[1];
         Database database = requestHandler.getDatabase();
-
-        // should this really be a list and not just an Airport?
-        ArrayList<Airport> airportInfo = database.getAirportInfo(/*airport*/);
-        return formatResponse(airportInfo);
+        AirportInfoResponse response = database.getAirportInfo(airport);
+        return formatResponse(response);
     }
 
     @Override
     public String formatResponse(Object response) {
-        if(response == null) {
-            return "error, unknown airport";
+        AirportInfoResponse airportInfoResponse = (AirportInfoResponse) response;
+        Airport airportInfo = airportInfoResponse.getAirportInfo();
+        if(airportInfo == null) {
+            return airportInfoResponse.getMessage();
         }
-        return null;
+        String airportName = airportInfo.getName();
+        String weather = airportInfo.getCurrentWeather();
+        String temperature = Integer.toString(airportInfo.getCurrentTemperature());
+        String delay = Integer.toString(airportInfo.getDelay());
+        return "airport," + airportName + "," + weather + "," + temperature + "," + delay;
     }
 }
