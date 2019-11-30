@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.List;
+
 public class Reservation {
 
     private String passenger;
@@ -32,6 +34,18 @@ public class Reservation {
 
     public String getDestination(){
         return itinerary.getDestination();
+    }
+
+    public float getPrice(){
+        return itinerary.getPrice();
+    }
+
+    public int getNumFlights(){
+        return itinerary.getNumFlights();
+    }
+
+    public List<Flight> getFlights(){
+        return itinerary.getFlights();
     }
 
 }

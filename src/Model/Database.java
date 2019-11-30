@@ -7,6 +7,7 @@ import Model.Responses.*;
 public class Database {
 
     private TextFileReader textFileReader;
+    private TextFileWriter textFileWriter;
     private ArrayList<Itinerary> lastFlightInfo;
 
     private static String CITIES_FILENAME = "cities.txt";
@@ -19,7 +20,7 @@ public class Database {
     /**
      * file for storing reservations. each line contains one reservation
      * with the following format:
-     * passenger; n{;itinerary}{0..n}
+     * passenger;n{;itinerary}{0..n}
      *
      * passenger is the passenger name
      * n is the number of reservations for the passenger
@@ -48,6 +49,39 @@ public class Database {
      * @throws Exception if setting up the database has failed
      */
     public Database() throws Exception{
+        uploadDatabase();
+    }
+
+    public void saveDatabase(){
+        String reservationsToSave = "";
+        for(String passenger: reservations.keySet()){
+            List<Reservation> reservationList = reservations.get(passenger);
+
+            reservationsToSave += passenger + ";" + reservationList.size();
+            for(Reservation reservation: reservationList){
+                reservationsToSave += reservation.getPrice() + "," + reservation.getNumFlights();
+
+                List<Flight> flights = reservation.getFlights();
+                if(flights.size() > 0){
+                    reservationsToSave += ";";
+                }
+
+                for(Flight flight: flights){
+                    reservationsToSave += flight.getFlightNum() + "," + flight.getOrigin() +
+                            "," + flight.getDepartureTime() + "," + flight.getDestination() +
+                            "," + flight.getArrivalTime();
+                }
+
+                reservationsToSave += "\n";
+            }
+        }
+
+        textFileWriter = new TextFileWriter(RESERVATION_FILENAME);
+        textFileWriter.writeToTextFile(reservationsToSave);
+    }
+
+
+    private void uploadDatabase() throws Exception{
         uploadAirports();
         uploadFlights();
         uploadReservations();
