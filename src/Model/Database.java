@@ -214,18 +214,6 @@ public class Database {
         }
     }
 
-    // helper method to validate requests
-    private Boolean airportCodeExists(String airportCode) {
-        Boolean exists = false;
-        for(String code : airports.keySet()) {
-            if(code == airportCode) {
-                exists = true;
-                break;
-            }
-        }
-        return exists;
-    }
-
     public FlightInfoResponse getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
         FlightKey flightKey = new FlightKey(origin, destination);
 
@@ -242,18 +230,14 @@ public class Database {
 
     public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){
         List<Reservation> reservationInfo = new ArrayList<>();
-
-        Boolean originExists = airportCodeExists(origin);
-        Boolean destinationExists = airportCodeExists(destination);
-
-        if(!originExists) {
+        if(!airports.containsKey(origin)) {
             return new ReservationInfoResponse("error, unknown origin", null);
         }
-        if(!destinationExists) {
+        if(!airports.containsKey(destination)) {
             return new ReservationInfoResponse("error, unknown destination", null);
         }
         if(!reservations.containsKey(passenger)){
-            return new ReservationInfoResponse("", reservationInfo);
+            return new ReservationInfoResponse("successful", reservationInfo);
         }
 
         List<Reservation> passengerReservations = reservations.get(passenger);
