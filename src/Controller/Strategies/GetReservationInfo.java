@@ -44,13 +44,13 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
             return reservationInfoResponse.getMessage();
         }
         Integer numReservations = reservations.size();
-        String reservationInfo = "retrieve," + Integer.toString(numReservations) + "\n";
+        String reservationInfo = "retrieve," + numReservations + "\n";
         for(int i = 0; i < numReservations; i++) {
             Reservation reservation = reservations.get(i);
             Itinerary itinerary = reservation.getItinerary();
             Integer numFlights = itinerary.getNumFlights();
             String price = Float.toString(itinerary.getPrice());
-            reservationInfo += price + "," + Integer.toString(numFlights);
+            reservationInfo += price + "," + numFlights;
             List<Flight> flights = itinerary.getFlights();
             Integer flightNum = 1;
             for(Flight flight : flights) {
@@ -58,7 +58,7 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
                 String departure = flight.getDepartureTime();
                 String destination = flight.getDestination();
                 String arrival = flight.getArrivalTime();
-                reservationInfo += "," + Integer.toString(flightNum);
+                reservationInfo += "," + flightNum;
                 reservationInfo += "," + origin;
                 reservationInfo += "," + departure;
                 reservationInfo += "," + destination;

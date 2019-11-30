@@ -5,12 +5,9 @@ import Controller.States.NoPartialRequests;
 import Model.Flight;
 import Model.Itinerary;
 import Model.Database;
-import java.util.ArrayList;
 import Model.Responses.FlightInfoResponse;
 import Model.SortOrder;
-
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class GetFlightInfo implements IRequestHandlerStrategy {
 
@@ -82,6 +79,35 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
 
     @Override
     public String formatResponse(Object response) {
-        return null;
+        FlightInfoResponse flightInfoResponse = (FlightInfoResponse) response;
+        List<Itinerary> itineraries = flightInfoResponse.getFlightInfo();
+        if(itineraries == null) {
+            return flightInfoResponse.getMessage();
+        }
+        Integer numItineraries = itineraries.size();
+        String flightInfo = "info," + numItineraries + "\n";
+        for(int i = 0; i < numItineraries; i++) {
+            flightInfo += (i + 1) + ","; // itinerary id
+            Itinerary itinerary = itineraries.get(i);
+            Integer numFlights = itinerary.getNumFlights();
+            String price = Float.toString(itinerary.getPrice());
+            flightInfo += price + "," + numFlights;
+            List<Flight> flights = itinerary.getFlights();
+            Integer flightNum = 1;
+            for(Flight flight : flights) {
+                String origin = flight.getOrigin();
+                String departure = flight.getDepartureTime();
+                String destination = flight.getDestination();
+                String arrival = flight.getArrivalTime();
+                flightInfo += "," + flightNum;
+                flightInfo += "," + origin;
+                flightInfo += "," + departure;
+                flightInfo += "," + destination;
+                flightInfo += "," + arrival;
+                flightNum++;
+            }
+            flightInfo += "\n";
+        }
+            return flightInfo;
     }
 }
