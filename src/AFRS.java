@@ -25,7 +25,8 @@ public class AFRS {
             database.saveDatabase();
         }
         catch(Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

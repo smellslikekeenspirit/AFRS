@@ -30,8 +30,10 @@ public class TextFileReader {
     public ArrayList<String> readTextFile() throws IOException {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader br = new BufferedReader(new FileReader(file));
-        while (br.readLine() != null){
-            lines.add(br.readLine());
+        String line = br.readLine();
+        while (line != null){
+            lines.add(line);
+            line = br.readLine();
         }
         return lines;
     }

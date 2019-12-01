@@ -26,7 +26,7 @@ public class Database {
      * n is the number of reservations for the passenger
      * itinerary in the format described in the SRS document
      */
-    private static String RESERVATION_FILENAME = "reservations.txt";
+    private static String RESERVATION_FILENAME = "data/reservations.txt";
     private static String RESERVATION_FILE_DELIMITER = ";";
 
     /**
