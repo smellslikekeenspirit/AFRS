@@ -31,7 +31,7 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
         String sortOrder = DEFAULT_SORT_ORDER;
 
         // if a connection limit is given, use that
-        if(parameters.length > 3 && parameters[3] != "") {
+        if(parameters.length > 3 && !parameters[3].equals("")) {
             // connection limit must be either 0, 1, or 2
             try {
                 int connectionLimitParam = Integer.parseInt(parameters[3]);
@@ -50,7 +50,7 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
         // if a sort order is given, use that
         if(parameters.length > 4) {
             // valid sort orders are departure, arrival, and airfare
-            if(parameters[4] == "departure" || parameters[4] == "arrival" || parameters[4] == "airfare") {
+            if(parameters[4].equals("departure") || parameters[4].equals("arrival") || parameters[4].equals("airfare")) {
                 sortOrder = parameters[4];
             }
             else {

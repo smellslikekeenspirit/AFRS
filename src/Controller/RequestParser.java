@@ -27,11 +27,12 @@ public class RequestParser {
         // and if none are found, use 'unknown'
         String keyword = "unknown";
         for(String recognizedKeyword : RECOGNIZED_KEYWORDS) {
-            if(recognizedKeyword == parameters[0]) {
+            if(recognizedKeyword.equals(parameters[0])) {
                 keyword = recognizedKeyword;
                 break;
             }
         }
+
         // set strategy based on keyword
         switch(keyword) {
             case "unknown":

@@ -16,7 +16,7 @@ public class AFRS {
             while(true) {
                 System.out.println("Enter a request (type exit to stop):");
                 String userInput = inputGetter.nextLine().trim().toLowerCase();
-                if(userInput == "exit") {
+                if(userInput.equals("exit")) {
                     break;
                 }
                 String response = requestHandler.handleRequest(userInput);
