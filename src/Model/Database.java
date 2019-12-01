@@ -182,8 +182,8 @@ public class Database {
             String[] lineTokens = line.split(FILE_DELIMITER);
             String origin = lineTokens[0];
             String destination = lineTokens[1];
-            String departureTime = lineTokens[2];
-            String arrivalTime = lineTokens[3];
+            Time departureTime = new Time(lineTokens[2]);
+            Time arrivalTime = new Time(lineTokens[3]);
             int flightNumber = Integer.parseInt(lineTokens[4]);
             float airFare = Float.parseFloat(lineTokens[5]);
 
@@ -223,9 +223,9 @@ public class Database {
                     int offset = 2*j;
                     int flightNumber = Integer.parseInt(singleItineraryTokens[offset+2]);
                     String origin = singleItineraryTokens[offset+3];
-                    String departureTime = singleItineraryTokens[offset+4];
+                    Time departureTime = new Time(singleItineraryTokens[offset+4]);
                     String destination = singleItineraryTokens[offset+5];
-                    String arrivalTime = singleItineraryTokens[offset+6];
+                    Time arrivalTime = new Time(singleItineraryTokens[offset+6]);
 
                     Flight flight = new Flight(origin, destination, departureTime, arrivalTime, flightNumber);
                     itineraryFlights.add(flight);
