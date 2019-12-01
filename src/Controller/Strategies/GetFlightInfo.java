@@ -96,9 +96,9 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
             Integer flightNum = 1;
             for(Flight flight : flights) {
                 String origin = flight.getOrigin();
-                String departure = flight.getDepartureTime();
+                String departure = flight.getDepartureTime().toString();
                 String destination = flight.getDestination();
-                String arrival = flight.getArrivalTime();
+                String arrival = flight.getArrivalTime().toString();
                 flightInfo += "," + flightNum;
                 flightInfo += "," + origin;
                 flightInfo += "," + departure;

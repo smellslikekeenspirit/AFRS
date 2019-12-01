@@ -4,6 +4,7 @@ public class Time implements Comparable<Time>{
 
     private int hour;
     private int minute;
+    private String stringFormat;
 
     private static String TIME_DELIMITER = ":";
 
@@ -25,6 +26,8 @@ public class Time implements Comparable<Time>{
         }
 
         minute = Integer.parseInt(secondTimeToken.substring(0, secondTimeTokenLength-2));
+
+        this.stringFormat = time;
     }
 
     @Override
@@ -46,5 +49,9 @@ public class Time implements Comparable<Time>{
         int thisTime = hour*60 + minute;
         int otherTime = time.hour*60 + minute;
         return thisTime - otherTime;
+    }
+
+    public String toString(){
+        return stringFormat;
     }
 }

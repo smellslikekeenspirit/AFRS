@@ -10,11 +10,11 @@ public class Database {
     private TextFileWriter textFileWriter;
     private ArrayList<Itinerary> lastFlightInfo;
 
-    private static String CITIES_FILENAME = "cities.txt";
-    private static String DELAY_TIMES_FILENAME = "delay_times.txt";
-    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "minimum_connection_times.txt";
-    private static String TTA_FLIGHTS_FILENAME = "TTA_flights.txt";
-    private static String WEATHER_TEMPERATURE_FILENAME = "weather_temp.txt";
+    private static String CITIES_FILENAME = "data/cities.txt";
+    private static String DELAY_TIMES_FILENAME = "data/delay_times.txt";
+    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "data/minimum_connection_times.txt";
+    private static String TTA_FLIGHTS_FILENAME = "data/TTA_flights.txt";
+    private static String WEATHER_TEMPERATURE_FILENAME = "data/weather_temp.txt";
     private static String FILE_DELIMITER = ",";
 
     /**
@@ -297,6 +297,7 @@ public class Database {
 
 
     public Response reserveFlight(int id, String passenger){
+
         return new Response("reserve, successful");
     }
 

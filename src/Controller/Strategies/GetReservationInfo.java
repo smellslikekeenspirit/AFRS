@@ -55,9 +55,9 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
             Integer flightNum = 1;
             for(Flight flight : flights) {
                 String origin = flight.getOrigin();
-                String departure = flight.getDepartureTime();
+                String departure = flight.getDepartureTime().toString();
                 String destination = flight.getDestination();
-                String arrival = flight.getArrivalTime();
+                String arrival = flight.getArrivalTime().toString();
                 reservationInfo += "," + flightNum;
                 reservationInfo += "," + origin;
                 reservationInfo += "," + departure;
