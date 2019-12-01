@@ -11,7 +11,7 @@ public class RequestParser {
 
         // clean up the request parameters so the formatting is consistent
         for(String parameter : parameters) {
-            parameter = parameter.trim().toLowerCase();
+            parameter = parameter.trim();
         }
 
         // if the request is not terminated by a semicolon,
