@@ -392,7 +392,6 @@ public class Database {
     }
 
     public AirportInfoResponse getAirportInfo(String airportCode){
-        airportCode = airportCode.toUpperCase();
         if(airports.containsKey(airportCode)){
             Airport airport = airports.get(airportCode);
             return new AirportInfoResponse("successful", airport);

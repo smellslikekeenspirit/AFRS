@@ -16,8 +16,8 @@ public class AFRS {
             // handle all requests sent by the user
             while(true) {
                 System.out.println("Enter a request (type exit to stop):");
-                String userInput = inputGetter.nextLine().trim().toLowerCase();
-                if(userInput.equals("exit")) {
+                String userInput = inputGetter.nextLine().trim();
+                if(userInput.toLowerCase().equals("exit")) {
                     break;
                 }
                 String response = requestHandler.handleRequest(userInput);
