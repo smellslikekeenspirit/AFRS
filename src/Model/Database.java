@@ -2,6 +2,8 @@ package Model;
 
 import java.io.IOException;
 import java.util.*;
+
+import Model.Comparators.ItineraryComparatorFactory;
 import Model.Responses.*;
 
 public class Database {
@@ -241,8 +243,21 @@ public class Database {
     }
 
     public FlightInfoResponse getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
-        List<Itinerary> itineraries = findFlightRoutes(origin, destination, connections);
-        return null;
+        if(!airports.containsKey(origin)){
+            return new FlightInfoResponse("error,unknown origin", null);
+        }
+
+        if(!airports.containsKey(destination)){
+            return new FlightInfoResponse("error,unknown destination", null);
+        }
+
+        List<Itinerary> itineraries = findAllItineraries(origin, destination, connections);
+
+        Comparator<Itinerary> comparator = ItineraryComparatorFactory.makeComparator(sortOrder);
+
+        Collections.sort(itineraries, comparator);
+
+        return new FlightInfoResponse("successful", itineraries);
     }
 
     private List<Flight> getFlights(String origin, String destination){
@@ -257,7 +272,7 @@ public class Database {
     }
 
 
-    private List<Itinerary> findFlightRoutes(String origin, String destination, int connections){
+    private List<Itinerary> findAllItineraries(String origin, String destination, int connections){
         List<Flight> flightList = getFlights(origin, destination);
         if(flightList == null){
             return new ArrayList<>();
@@ -269,7 +284,7 @@ public class Database {
             visited.add(flight);
             List<Flight> path = new ArrayList<>();
             path.add(flight);
-            List<Itinerary> itinerariesFound = findItinerary(flight.getDestination(), destination,
+            List<Itinerary> itinerariesFound = findItineraryForFlight(flight, destination,
                     visited, connections, path);
 
             if(itinerariesFound != null){
@@ -280,9 +295,10 @@ public class Database {
         return itineraryList;
     }
 
-    private List<Itinerary> findItinerary(String currentAirport, String destination,
-                                    Set<Flight> visited, int numConnectionsLeft,
-                                    List<Flight> path){
+    private List<Itinerary> findItineraryForFlight(Flight currentFlight, String destination,
+                                                   Set<Flight> visited, int numConnectionsLeft,
+                                                   List<Flight> path){
+        String currentAirport = currentFlight.getDestination();
         if(currentAirport.equals(destination) && numConnectionsLeft >= 0){
             Itinerary itinerary = new Itinerary(path);
             List<Itinerary> itineraryList = new ArrayList<>();
@@ -293,18 +309,23 @@ public class Database {
             return null;
         }
 
+        List<Itinerary> flightItineraries = new ArrayList<>();
         List<Flight> flightList = getFlights(currentAirport, destination);
         for(Flight flight: flightList){
             if(!visited.contains(flight)){
                 visited.add(flight);
                 path.add(flight);
-                findItinerary(flight.getDestination(), destination, visited, numConnectionsLeft-1, path);
+                List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
+
+                if(itineraryList != null){
+                    flightItineraries.addAll(itineraryList);
+                }
                 path.remove(flight);
                 visited.remove(flight);
             }
         }
 
-        return null;
+        return flightItineraries;
     }
 
     public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){
