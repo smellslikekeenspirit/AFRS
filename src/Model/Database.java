@@ -12,11 +12,11 @@ public class Database {
     private TextFileWriter textFileWriter;
     private List<Itinerary> lastFlightInfo;
 
-    private static String CITIES_FILENAME = "data/cities.txt";
-    private static String DELAY_TIMES_FILENAME = "data/delay_times.txt";
-    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "data/minimum_connection_times.txt";
-    private static String TTA_FLIGHTS_FILENAME = "data/TTA_flights.txt";
-    private static String WEATHER_TEMPERATURE_FILENAME = "data/weather_temp.txt";
+    private static String CITIES_FILENAME = "test_data/cities.txt";
+    private static String DELAY_TIMES_FILENAME = "test_data/delay_times.txt";
+    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "test_data/minimum_connection_times.txt";
+    private static String TTA_FLIGHTS_FILENAME = "test_data/TTA_flights.txt";
+    private static String WEATHER_TEMPERATURE_FILENAME = "test_data/weather_temp.txt";
     private static String FILE_DELIMITER = ",";
 
     /**
@@ -28,7 +28,7 @@ public class Database {
      * n is the number of reservations for the passenger
      * itinerary in the format described in the SRS document
      */
-    private static String RESERVATION_FILENAME = "data/reservations.txt";
+    private static String RESERVATION_FILENAME = "test_data/reservations.txt";
     private static String RESERVATION_FILE_DELIMITER = ";";
 
     /**
@@ -37,10 +37,9 @@ public class Database {
     private Map<String, Airport> airports;
 
     /**
-     * maps a (origin, destination) tuple to flights that
-     * match the tuple pair
+     * maps airport code to flights that start at that airport
      */
-    private Map<FlightKey, List<Flight>> flights;
+    private Map<String, List<Flight>> flights;
 
     /**
      * maps a passenger to their reservations
@@ -200,16 +199,15 @@ public class Database {
             float airFare = Float.parseFloat(lineTokens[5]);
 
             Flight flight = new Flight(origin, destination, departureTime, arrivalTime, flightNumber, airFare);
-            FlightKey flightKey = new FlightKey(origin, destination);
 
-            if(flights.containsKey(flightKey)){
-                List<Flight> flightList = flights.get(flightKey);
+            if(flights.containsKey(origin)){
+                List<Flight> flightList = flights.get(origin);
                 flightList.add(flight);
             }
             else{
                 List<Flight> newFlightList = new ArrayList<>();
                 newFlightList.add(flight);
-                flights.put(flightKey, newFlightList);
+                flights.put(origin, newFlightList);
             }
         }
     }
@@ -272,11 +270,9 @@ public class Database {
         return new FlightInfoResponse("successful", itineraries);
     }
 
-    private List<Flight> getFlights(String origin, String destination){
-        FlightKey flightKey = new FlightKey(origin, destination);
-
-        if(flights.containsKey(flightKey)){
-            return flights.get(flightKey);
+    private List<Flight> getFlights(String origin){
+        if(flights.containsKey(origin)){
+            return flights.get(origin);
         }
         else{
             return null;
@@ -285,7 +281,7 @@ public class Database {
 
 
     private List<Itinerary> findAllItineraries(String origin, String destination, int connections){
-        List<Flight> flightList = getFlights(origin, destination);
+        List<Flight> flightList = getFlights(origin);
         if(flightList == null){
             return new ArrayList<>();
         }
@@ -322,19 +318,21 @@ public class Database {
         }
 
         List<Itinerary> flightItineraries = new ArrayList<>();
-        List<Flight> flightList = getFlights(currentAirport, destination);
-        for(Flight flight: flightList){
-            if(!visited.contains(flight) &&
-                    flightsCanBeScheduled(currentFlight, flight)){
-                visited.add(flight);
-                path.add(flight);
-                List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
+        List<Flight> flightList = getFlights(currentAirport);
+        if(flightList != null){
+            for(Flight flight: flightList){
+                if(!visited.contains(flight) &&
+                        flightsCanBeScheduled(currentFlight, flight)){
+                    visited.add(flight);
+                    path.add(flight);
+                    List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
 
-                if(itineraryList != null){
-                    flightItineraries.addAll(itineraryList);
+                    if(itineraryList != null){
+                        flightItineraries.addAll(itineraryList);
+                    }
+                    path.remove(flight);
+                    visited.remove(flight);
                 }
-                path.remove(flight);
-                visited.remove(flight);
             }
         }
 
@@ -343,8 +341,8 @@ public class Database {
 
     private boolean flightsCanBeScheduled(Flight flight1, Flight flight2){
         int minuteIntervalBetweenFlights =
-                flight1.getDepartureTime().getTotalMinutes() -
-                flight2.getDepartureTime().getTotalMinutes();
+                flight2.getDepartureTime().getTotalMinutes() -
+                flight1.getArrivalTime().getTotalMinutes();
 
         if(minuteIntervalBetweenFlights < 0){
             return false;

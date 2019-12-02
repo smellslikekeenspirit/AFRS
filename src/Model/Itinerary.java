@@ -1,5 +1,6 @@
 package Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Itinerary {
@@ -10,17 +11,23 @@ public class Itinerary {
 
     public Itinerary(float price, List<Flight> flights){
         this.price = price;
-        this.flights = flights;
+        this.flights = copyFlightList(flights);
         this.numFlights = flights.size();
     }
 
     public Itinerary(List<Flight> flights){
-        this.flights = flights;
+        this.flights = copyFlightList(flights);
         numFlights = flights.size();
         price = 0;
         for(Flight flight: flights){
             price += flight.getPrice();
         }
+    }
+
+    private List<Flight> copyFlightList(List<Flight> flights){
+        List<Flight> copy = new ArrayList<>();
+        copy.addAll(flights);
+        return copy;
     }
 
     public List<Flight> getFlights() { return flights; }
