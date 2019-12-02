@@ -20,12 +20,15 @@ public class Time implements Comparable<Time>{
         String secondTimeToken = timeTokens[1];
         int secondTimeTokenLength = secondTimeToken.length();
         String amOrPm = secondTimeToken.substring(secondTimeTokenLength-1);
-        hour = Integer.parseInt(timeTokens[0]);
-        if(amOrPm.equals("p")){
-            hour += 12;
+        this.hour = Integer.parseInt(timeTokens[0]);
+        if(amOrPm.equals("a") && this.hour == 12) {
+            this.hour = 0;
+        }
+        if(amOrPm.equals("p") && this.hour != 12){
+            this.hour += 12;
         }
 
-        minute = Integer.parseInt(secondTimeToken.substring(0, secondTimeTokenLength-2));
+        this.minute = Integer.parseInt(secondTimeToken.substring(0, secondTimeTokenLength-1));
 
         this.stringFormat = time;
     }

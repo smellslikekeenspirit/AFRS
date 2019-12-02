@@ -12,11 +12,11 @@ public class Database {
     private TextFileWriter textFileWriter;
     private List<Itinerary> lastFlightInfo;
 
-    private static String CITIES_FILENAME = "test_data/cities.txt";
-    private static String DELAY_TIMES_FILENAME = "test_data/delay_times.txt";
-    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "test_data/minimum_connection_times.txt";
-    private static String TTA_FLIGHTS_FILENAME = "test_data/TTA_flights.txt";
-    private static String WEATHER_TEMPERATURE_FILENAME = "test_data/weather_temp.txt";
+    private static String CITIES_FILENAME = "data/cities.txt";
+    private static String DELAY_TIMES_FILENAME = "data/delay_times.txt";
+    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "data/minimum_connection_times.txt";
+    private static String TTA_FLIGHTS_FILENAME = "data/TTA_flights.txt";
+    private static String WEATHER_TEMPERATURE_FILENAME = "data/weather_temp.txt";
     private static String FILE_DELIMITER = ",";
 
     /**
@@ -28,7 +28,7 @@ public class Database {
      * n is the number of reservations for the passenger
      * itinerary in the format described in the SRS document
      */
-    private static String RESERVATION_FILENAME = "test_data/reservations.txt";
+    private static String RESERVATION_FILENAME = "data/reservations.txt";
     private static String RESERVATION_FILE_DELIMITER = ";";
 
     /**
