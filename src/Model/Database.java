@@ -59,13 +59,18 @@ public class Database {
         for(String passenger: reservations.keySet()){
             List<Reservation> reservationList = reservations.get(passenger);
 
-            reservationsToSave += passenger + ";" + reservationList.size();
+            int numReservations = reservationList.size();
+            reservationsToSave += passenger + ";" + numReservations;
+            if(numReservations != 0){
+                reservationsToSave += ";";
+            }
+
             for(Reservation reservation: reservationList){
                 reservationsToSave += reservation.getPrice() + "," + reservation.getNumFlights();
 
                 List<Flight> flights = reservation.getFlights();
                 if(flights.size() > 0){
-                    reservationsToSave += ";";
+                    reservationsToSave += ",";
                 }
 
                 for(Flight flight: flights){
@@ -406,7 +411,7 @@ public class Database {
         if(lastFlightInfo == null){
             return new Response("error, must get flight information first");
         }
-        else if(id < 0 || lastFlightInfo.size() >= id){
+        else if(id < 0 || id >= lastFlightInfo.size()){
             return new Response("error, invalid id");
         }
         else{
