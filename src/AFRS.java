@@ -10,7 +10,7 @@ public class AFRS {
         // database will throw exceptions if it fails to load correctly
         try {
             IView view = new ConsoleWriter();
-            Database database = new Database();
+            Database database = new Database("data/");
             RequestHandler requestHandler = new RequestHandler(database);
             Scanner inputGetter = new Scanner(System.in);
             // handle all requests sent by the user

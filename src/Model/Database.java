@@ -12,12 +12,12 @@ public class Database {
     private TextFileWriter textFileWriter;
     private List<Itinerary> lastFlightInfo;
 
-    private static String CITIES_FILENAME = "data/cities.txt";
-    private static String DELAY_TIMES_FILENAME = "data/delay_times.txt";
-    private static String MINIMUM_CONNECTION_TIMES_FILENAME = "data/minimum_connection_times.txt";
-    private static String TTA_FLIGHTS_FILENAME = "data/TTA_flights.txt";
-    private static String WEATHER_TEMPERATURE_FILENAME = "data/weather_temp.txt";
-    private static String FILE_DELIMITER = ",";
+    private String CITIES_FILENAME = "cities.txt";
+    private String DELAY_TIMES_FILENAME = "delay_times.txt";
+    private String MINIMUM_CONNECTION_TIMES_FILENAME = "minimum_connection_times.txt";
+    private String TTA_FLIGHTS_FILENAME = "TTA_flights.txt";
+    private String WEATHER_TEMPERATURE_FILENAME = "weather_temp.txt";
+    private String FILE_DELIMITER = ",";
 
     /**
      * file for storing reservations. each line contains one reservation
@@ -28,8 +28,8 @@ public class Database {
      * n is the number of reservations for the passenger
      * itinerary in the format described in the SRS document
      */
-    private static String RESERVATION_FILENAME = "data/reservations.txt";
-    private static String RESERVATION_FILE_DELIMITER = ";";
+    private String RESERVATION_FILENAME = "reservations.txt";
+    private String RESERVATION_FILE_DELIMITER = ";";
 
     /**
      * maps the airport code to the airport
@@ -49,7 +49,13 @@ public class Database {
     /**
      * @throws Exception if setting up the database has failed
      */
-    public Database() throws Exception{
+    public Database(String path) throws Exception{
+        CITIES_FILENAME = path + CITIES_FILENAME;
+        DELAY_TIMES_FILENAME = path + DELAY_TIMES_FILENAME;
+        MINIMUM_CONNECTION_TIMES_FILENAME = path + MINIMUM_CONNECTION_TIMES_FILENAME;
+        RESERVATION_FILENAME = path + RESERVATION_FILENAME;
+        TTA_FLIGHTS_FILENAME = path + TTA_FLIGHTS_FILENAME;
+        WEATHER_TEMPERATURE_FILENAME = path + WEATHER_TEMPERATURE_FILENAME;
         uploadDatabase();
     }
 
@@ -73,10 +79,16 @@ public class Database {
                     reservationsToSave += ",";
                 }
 
-                for(Flight flight: flights){
+                int numFlights = flights.size();
+                for(int j=0; j<numFlights; j++){
+                    Flight flight = flights.get(j);
                     reservationsToSave += flight.getFlightNum() + "," + flight.getOrigin() +
                             "," + flight.getDepartureTime() + "," + flight.getDestination() +
                             "," + flight.getArrivalTime();
+
+                    if(j != numFlights-1){
+                        reservationsToSave += ",";
+                    }
                 }
 
                 if(i != numReservations-1){
@@ -230,7 +242,7 @@ public class Database {
 
                 List<Flight> itineraryFlights = new ArrayList<>();
                 for(int j=0; j<numFlights; j++){
-                    int offset = 2*j;
+                    int offset = 5*j;
                     int flightNumber = Integer.parseInt(singleItineraryTokens[offset+2]);
                     String origin = singleItineraryTokens[offset+3];
                     Time departureTime = new Time(singleItineraryTokens[offset+4]);
@@ -288,8 +300,9 @@ public class Database {
 
         List<Itinerary> itineraryList = new ArrayList<>();
         for(Flight flight: flightList){
-            Set<Flight> visited = new HashSet<>();
-            visited.add(flight);
+            Set<String> visited = new HashSet<>();
+            visited.add(flight.getOrigin());
+            visited.add(flight.getDestination());
             List<Flight> path = new ArrayList<>();
             path.add(flight);
             List<Itinerary> itinerariesFound = findItineraryForFlight(flight, destination,
@@ -304,7 +317,7 @@ public class Database {
     }
 
     private List<Itinerary> findItineraryForFlight(Flight currentFlight, String destination,
-                                                   Set<Flight> visited, int numConnectionsLeft,
+                                                   Set<String> visited, int numConnectionsLeft,
                                                    List<Flight> path){
         String currentAirport = currentFlight.getDestination();
         if(currentAirport.equals(destination) && numConnectionsLeft >= 0){
@@ -321,9 +334,10 @@ public class Database {
         List<Flight> flightList = getFlights(currentAirport);
         if(flightList != null){
             for(Flight flight: flightList){
-                if(!visited.contains(flight) &&
+                String newDestination = flight.getDestination();
+                if(!visited.contains(newDestination) &&
                         flightsCanBeScheduled(currentFlight, flight)){
-                    visited.add(flight);
+                    visited.add(newDestination);
                     path.add(flight);
                     List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
 
@@ -331,7 +345,7 @@ public class Database {
                         flightItineraries.addAll(itineraryList);
                     }
                     path.remove(flight);
-                    visited.remove(flight);
+                    visited.remove(newDestination);
                 }
             }
         }
@@ -414,7 +428,7 @@ public class Database {
         if(lastFlightInfo == null){
             return new Response("error, must get flight information first");
         }
-        else if(id < 0 || id > lastFlightInfo.size()){
+        else if(id <= 0 || id > lastFlightInfo.size()){
             return new Response("error, invalid id");
         }
         else{
