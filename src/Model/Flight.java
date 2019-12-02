@@ -53,4 +53,26 @@ public class Flight {
         return price;
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(this == obj){
+            return true;
+        }
+
+        if(obj instanceof Flight){
+            Flight flight = (Flight) obj;
+            return origin.equals(flight.origin) && destination.equals(flight.destination) &&
+                    departureTime.equals(flight.departureTime) && arrivalTime.equals(flight.arrivalTime) &&
+                    flightNum == flight.flightNum && price == flight.price;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return origin.hashCode()^2 + destination.hashCode()^3 +
+                departureTime.hashCode()^flightNum + arrivalTime.hashCode()^((int) price);
+    }
+
 }

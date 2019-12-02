@@ -245,16 +245,63 @@ public class Database {
         return null;
     }
 
-
-    private List<Itinerary> findFlightRoutes(String origin, String destination, int connections){
+    private List<Flight> getFlights(String origin, String destination){
         FlightKey flightKey = new FlightKey(origin, destination);
 
-        List<Flight> flightList;
         if(flights.containsKey(flightKey)){
-            flightList = flights.get(flightKey);
+            return flights.get(flightKey);
         }
         else{
-            flightList = new ArrayList<>();
+            return null;
+        }
+    }
+
+
+    private List<Itinerary> findFlightRoutes(String origin, String destination, int connections){
+        List<Flight> flightList = getFlights(origin, destination);
+        if(flightList == null){
+            return new ArrayList<>();
+        }
+
+        List<Itinerary> itineraryList = new ArrayList<>();
+        for(Flight flight: flightList){
+            Set<Flight> visited = new HashSet<>();
+            visited.add(flight);
+            List<Flight> path = new ArrayList<>();
+            path.add(flight);
+            List<Itinerary> itinerariesFound = findItinerary(flight.getDestination(), destination,
+                    visited, connections, path);
+
+            if(itinerariesFound != null){
+                itineraryList.addAll(itinerariesFound);
+            }
+        }
+
+        return itineraryList;
+    }
+
+    private List<Itinerary> findItinerary(String currentAirport, String destination,
+                                    Set<Flight> visited, int numConnectionsLeft,
+                                    List<Flight> path){
+        if(currentAirport.equals(destination) && numConnectionsLeft >= 0){
+            Itinerary itinerary = new Itinerary(path);
+            List<Itinerary> itineraryList = new ArrayList<>();
+            itineraryList.add(itinerary);
+            return itineraryList;
+        }
+        else if(numConnectionsLeft == 0){
+            return null;
+        }
+
+        List<Flight> flightList = getFlights(currentAirport, destination);
+        for(Flight flight: flightList){
+            if(!visited.contains(flight)){
+                visited.add(flight);
+                path.add(flight);
+                findItinerary(flight.getDestination(), destination, visited, numConnectionsLeft-1, path);
+                path.remove(flight);
+                visited.remove(flight);
+            }
         }
 
         return null;

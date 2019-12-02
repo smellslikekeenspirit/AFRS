@@ -44,6 +44,12 @@ public class Time implements Comparable<Time>{
         return false;
     }
 
+
+    @Override
+    public int hashCode(){
+        return hour*60 + minute;
+    }
+
     @Override
     public int compareTo(Time time){
         int thisTime = hour*60 + minute;
