@@ -156,7 +156,7 @@ public class Database {
                 airport = airports.get(airportCode);
             }
             else{
-                String message = "Error: Trying to set connection time of unknown airport " +
+                String message = "Error: Trying to set weather/temperature of unknown airport " +
                         "\"" + airportCode + "\".";
                 throw new Exception(message);
             }
@@ -280,6 +280,7 @@ public class Database {
     }
 
     public AirportInfoResponse getAirportInfo(String airportCode){
+        airportCode = airportCode.toUpperCase();
         if(airports.containsKey(airportCode)){
             Airport airport = airports.get(airportCode);
             return new AirportInfoResponse("successful", airport);

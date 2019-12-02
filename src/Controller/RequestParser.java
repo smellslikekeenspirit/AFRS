@@ -56,6 +56,7 @@ public class RequestParser {
         }
 
         // return the formatted request
-        return String.join(",", parameters);
+        String formattedRequest = String.join(",", parameters);
+        return formattedRequest.substring(0, formattedRequest.length() - 1); // remove semicolon
     }
 }
