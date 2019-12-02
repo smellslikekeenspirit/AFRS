@@ -65,7 +65,8 @@ public class Database {
                 reservationsToSave += ";";
             }
 
-            for(Reservation reservation: reservationList){
+            for(int i=0; i<numReservations; i++){
+                Reservation reservation = reservationList.get(i);
                 reservationsToSave += reservation.getPrice() + "," + reservation.getNumFlights();
 
                 List<Flight> flights = reservation.getFlights();
@@ -79,8 +80,12 @@ public class Database {
                             "," + flight.getArrivalTime();
                 }
 
-                reservationsToSave += "\n";
+                if(i != numReservations-1){
+                    reservationsToSave += ";";
+                }
             }
+
+            reservationsToSave += "\n";
         }
 
         textFileWriter = new TextFileWriter(RESERVATION_FILENAME);
@@ -411,7 +416,7 @@ public class Database {
         if(lastFlightInfo == null){
             return new Response("error, must get flight information first");
         }
-        else if(id < 0 || id >= lastFlightInfo.size()){
+        else if(id < 0 || id > lastFlightInfo.size()){
             return new Response("error, invalid id");
         }
         else{
