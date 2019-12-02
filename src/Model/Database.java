@@ -234,15 +234,7 @@ public class Database {
                 Itinerary currentItinerary = new Itinerary(itineraryPrice, itineraryFlights);
                 Reservation currentReservation = new Reservation(passenger, currentItinerary);
 
-                if(reservations.containsKey(passenger)){
-                    List<Reservation> reservationList = reservations.get(passenger);
-                    reservationList.add(currentReservation);
-                }
-                else{
-                    List<Reservation> newReservationList = new ArrayList<>();
-                    newReservationList.add(currentReservation);
-                    reservations.put(passenger, newReservationList);
-                }
+                addReservation(currentReservation);
             }
 
         }
@@ -297,8 +289,31 @@ public class Database {
 
 
     public Response reserveFlight(int id, String passenger){
+        if(lastFlightInfo == null){
+            return new Response("error, must get flight information first");
+        }
+        else if(id < 0 || lastFlightInfo.size() >= id){
+            return new Response("error, invalid id");
+        }
+        else{
+            Itinerary itinerary = lastFlightInfo.get(id-1);
+            Reservation reservation = new Reservation(passenger, itinerary);
+            addReservation(reservation);
+            return new Response("reserve, successful");
+        }
+    }
 
-        return new Response("reserve, successful");
+    private void addReservation(Reservation reservation){
+        String passenger = reservation.getPassenger();
+        if(reservations.containsKey(passenger)){
+            List<Reservation> reservationList = reservations.get(passenger);
+            reservationList.add(reservation);
+        }
+        else{
+            List<Reservation> newReservationList = new ArrayList<>();
+            newReservationList.add(reservation);
+            reservations.put(passenger, newReservationList);
+        }
     }
 
     public Response deleteReservation(String passenger, String origin, String destination){
