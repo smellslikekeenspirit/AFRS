@@ -49,7 +49,7 @@ public class Reservation implements Comparable<Reservation> {
     }
 
     public int compareTo(Reservation reservation){
-        return 0;
+        return this.getOrigin().compareTo(reservation.getOrigin());
     }
 
 }
