@@ -52,7 +52,7 @@ public class Database {
         uploadDatabase();
     }
 
-    public void saveDatabase(){
+    public void saveDatabase() throws IOException {
         String reservationsToSave = "";
         for(String passenger: reservations.keySet()){
             List<Reservation> reservationList = reservations.get(passenger);

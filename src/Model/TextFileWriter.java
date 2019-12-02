@@ -15,8 +15,9 @@ public class TextFileWriter {
         this.file = new File(filename);
     }
 
-    public void writeToTextFile(String text){
-        // do we write the db to a new txt file and save it as db text
-
+    public void writeToTextFile(String text) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        writer.write(text);
+        writer.flush();
     }
 }
