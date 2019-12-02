@@ -50,4 +50,22 @@ public class Itinerary {
             return null;
         }
     }
+
+    public Time getArrivalTime() {
+        if(numFlights > 0){
+            return flights.get(numFlights-1).getArrivalTime();
+        }
+        else{
+            return null;
+        }
+    }
+
+    public Time getDepartureTime() {
+        if(numFlights > 0){
+            return flights.get(0).getDepartureTime();
+        }
+        else{
+            return null;
+        }
+    }
 }

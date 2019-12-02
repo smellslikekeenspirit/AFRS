@@ -16,16 +16,8 @@ public class Reservation implements Comparable<Reservation> {
         return passenger;
     }
 
-    public void setPassenger(String passenger) {
-        this.passenger = passenger;
-    }
-
     public Itinerary getItinerary() {
         return itinerary;
-    }
-
-    public void setItinerary(Itinerary itinerary) {
-        this.itinerary = itinerary;
     }
 
     public String getOrigin(){
@@ -50,6 +42,11 @@ public class Reservation implements Comparable<Reservation> {
 
     public int compareTo(Reservation reservation){
         return this.getOrigin().compareTo(reservation.getOrigin());
+    }
+
+    public boolean equals(Reservation reservation) {
+        return this.getOrigin().equals(reservation.getOrigin())
+                && this.getDestination().equals(reservation.getDestination());
     }
 
 }

@@ -355,15 +355,27 @@ public class Database {
         else{
             Itinerary itinerary = lastFlightInfo.get(id-1);
             Reservation reservation = new Reservation(passenger, itinerary);
-            addReservation(reservation);
-            return new Response("reserve, successful");
+            boolean successful = addReservation(reservation);
+            if(successful) {
+                return new Response("reserve, successful");
+            }
+            else {
+                return new Response("error, duplicate reservation");
+            }
         }
     }
 
-    private void addReservation(Reservation reservation){
+    private boolean addReservation(Reservation reservation){
         String passenger = reservation.getPassenger();
         if(reservations.containsKey(passenger)){
             List<Reservation> reservationList = reservations.get(passenger);
+            // don't add reservation if a reservation with the same
+            // destination and origin exists
+            for(Reservation r : reservationList) {
+                if(r.equals(reservation)) {
+                    return false;
+                }
+            }
             reservationList.add(reservation);
         }
         else{
@@ -371,6 +383,7 @@ public class Database {
             newReservationList.add(reservation);
             reservations.put(passenger, newReservationList);
         }
+        return true;
     }
 
     public Response deleteReservation(String passenger, String origin, String destination){
