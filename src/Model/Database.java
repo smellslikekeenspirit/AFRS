@@ -8,7 +8,7 @@ public class Database {
 
     private TextFileReader textFileReader;
     private TextFileWriter textFileWriter;
-    private ArrayList<Itinerary> lastFlightInfo;
+    private List<Itinerary> lastFlightInfo;
 
     private static String CITIES_FILENAME = "data/cities.txt";
     private static String DELAY_TIMES_FILENAME = "data/delay_times.txt";
@@ -241,6 +241,12 @@ public class Database {
     }
 
     public FlightInfoResponse getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
+        List<Itinerary> itineraries = findFlightRoutes(origin, destination, connections);
+        return null;
+    }
+
+
+    private List<Itinerary> findFlightRoutes(String origin, String destination, int connections){
         FlightKey flightKey = new FlightKey(origin, destination);
 
         List<Flight> flightList;
