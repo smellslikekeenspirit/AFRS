@@ -57,7 +57,7 @@ public class Time implements Comparable<Time>{
     @Override
     public int compareTo(Time time){
         int thisTime = hour*60 + minute;
-        int otherTime = time.hour*60 + minute;
+        int otherTime = time.hour*60 + time.minute;
         return thisTime - otherTime;
     }
 
