@@ -1,5 +1,4 @@
 package Controller.Strategies;
-
 import Controller.RequestHandler;
 
 public interface IRequestHandlerStrategy {

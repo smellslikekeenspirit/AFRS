@@ -19,7 +19,10 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
 
+        // parameters are given in a comma-separated list
         String[] parameters = request.split(",");
+        // expecting keyword, origin, destination, and optionally
+        // connection limit and sort order
         if(parameters.length < 3 || parameters.length > 5) {
             return ("error, invalid parameters");
         }
@@ -81,17 +84,22 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
     public String formatResponse(Object response) {
         FlightInfoResponse flightInfoResponse = (FlightInfoResponse) response;
         List<Itinerary> itineraries = flightInfoResponse.getFlightInfo();
+        // report any errors
         if(itineraries == null) {
             return flightInfoResponse.getMessage();
         }
         Integer numItineraries = itineraries.size();
+
+        // build up flight info string
         String flightInfo = "info," + numItineraries + "\n";
         for(int i = 0; i < numItineraries; i++) {
             flightInfo += (i + 1) + ","; // itinerary id
+            // add itinerary info
             Itinerary itinerary = itineraries.get(i);
             Integer numFlights = itinerary.getNumFlights();
             String price = Float.toString(itinerary.getPrice());
             flightInfo += price + "," + numFlights;
+            // add all flights attached to the given itinerary
             List<Flight> flights = itinerary.getFlights();
             Integer flightNum = 1;
             for(Flight flight : flights) {

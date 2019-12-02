@@ -351,26 +351,40 @@ public class Database {
 
     public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){
         List<Reservation> reservationInfo = new ArrayList<>();
-        if(!airports.containsKey(origin)) {
+        boolean filterByOrigin = !origin.equals("");
+        boolean filterByDestination = !destination.equals("");
+
+        // check for errors
+        if(filterByOrigin && !airports.containsKey(origin)) {
             return new ReservationInfoResponse("error, unknown origin", null);
         }
-        if(!airports.containsKey(destination)) {
+        if(filterByDestination && !airports.containsKey(destination)) {
             return new ReservationInfoResponse("error, unknown destination", null);
         }
+
+        // if no reservations exist, return an empty list
         if(!reservations.containsKey(passenger)){
             return new ReservationInfoResponse("successful", reservationInfo);
         }
 
+        // filter out reservations that don't match the requested origin/destination
+        // if applicable
         List<Reservation> passengerReservations = reservations.get(passenger);
         for(Reservation reservation: passengerReservations){
-            if(reservation.getOrigin().equals(origin) &&
-               reservation.getDestination().equals(destination)){
+            boolean addReservation = true;
+            if(filterByOrigin && !reservation.getOrigin().equals(origin)) {
+                addReservation = false;
+            }
+            if(filterByDestination && !reservation.getDestination().equals(destination)) {
+                addReservation = false;
+            }
+            if(addReservation) {
                 reservationInfo.add(reservation);
             }
         }
 
         //sort by origin
-        Collections.sort(passengerReservations);
+        Collections.sort(reservationInfo);
 
         return new ReservationInfoResponse("successful", reservationInfo);
     }

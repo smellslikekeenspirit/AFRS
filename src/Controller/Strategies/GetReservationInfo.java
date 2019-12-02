@@ -15,7 +15,10 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
 
+        // parameters are given in a comma-separated list
         String[] parameters = request.split(",");
+        // expecting keyword, passenger, and optionally,
+        // origin and destination
         if(parameters.length < 2 || parameters.length > 4) {
             return ("error, invalid parameters");
         }

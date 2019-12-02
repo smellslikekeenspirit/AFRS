@@ -11,7 +11,9 @@ public class GetAirportInfo implements IRequestHandlerStrategy {
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
 
+        // parameters are given in a comma-separated list
         String[] parameters = request.split(",");
+        // expecting keyword and airport
         if(parameters.length != 2) {
             return ("error, invalid parameters");
         }
