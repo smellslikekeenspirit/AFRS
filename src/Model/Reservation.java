@@ -2,7 +2,7 @@ package Model;
 
 import java.util.List;
 
-public class Reservation {
+public class Reservation implements Comparable<Reservation> {
 
     private String passenger;
     private Itinerary itinerary;
@@ -46,6 +46,10 @@ public class Reservation {
 
     public List<Flight> getFlights(){
         return itinerary.getFlights();
+    }
+
+    public int compareTo(Reservation reservation){
+        return 0;
     }
 
 }

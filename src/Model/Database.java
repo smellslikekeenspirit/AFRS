@@ -274,6 +274,8 @@ public class Database {
             }
         }
 
+        Collections.sort(passengerReservations);
+
         return new ReservationInfoResponse("successful", reservationInfo);
     }
 
