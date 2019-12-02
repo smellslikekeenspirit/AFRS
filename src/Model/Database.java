@@ -358,7 +358,8 @@ public class Database {
 
         List<Itinerary> itineraries = findAllItineraries(origin, destination, connections);
 
-        Comparator<Itinerary> comparator = ItineraryComparatorFactory.makeComparator(sortOrder);
+        ItineraryComparatorFactory itineraryComparatorFactory = new ItineraryComparatorFactory();
+        Comparator<Itinerary> comparator = itineraryComparatorFactory.makeComparator(sortOrder);
 
         Collections.sort(itineraries, comparator);
 

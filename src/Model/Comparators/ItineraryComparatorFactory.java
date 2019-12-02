@@ -16,7 +16,7 @@ public class ItineraryComparatorFactory {
      * @return a comparator that can be used to sort itineraries
      *      based on the given sort order
      */
-    public static Comparator<Itinerary> makeComparator(SortOrder sortOrder){
+    public Comparator<Itinerary> makeComparator(SortOrder sortOrder){
         switch(sortOrder){
             case DEPARTURE:
                 return new DepartureComparator();
