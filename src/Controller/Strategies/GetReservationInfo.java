@@ -55,18 +55,17 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
             String price = Float.toString(itinerary.getPrice());
             reservationInfo += price + "," + numFlights;
             List<Flight> flights = itinerary.getFlights();
-            Integer flightNum = 1;
             for(Flight flight : flights) {
                 String origin = flight.getOrigin();
                 String departure = flight.getDepartureTime().toString();
                 String destination = flight.getDestination();
                 String arrival = flight.getArrivalTime().toString();
+                String flightNum = Integer.toString(flight.getFlightNum());
                 reservationInfo += "," + flightNum;
                 reservationInfo += "," + origin;
                 reservationInfo += "," + departure;
                 reservationInfo += "," + destination;
                 reservationInfo += "," + arrival;
-                flightNum++;
             }
             reservationInfo += "\n";
         }
