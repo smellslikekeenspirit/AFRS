@@ -257,6 +257,8 @@ public class Database {
 
         Collections.sort(itineraries, comparator);
 
+        lastFlightInfo = itineraries;
+
         return new FlightInfoResponse("successful", itineraries);
     }
 
