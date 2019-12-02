@@ -4,19 +4,62 @@ import java.io.IOException;
 import java.util.*;
 
 import Model.Comparators.ItineraryComparatorFactory;
+import Model.Comparators.SortOrder;
 import Model.Responses.*;
 
+/**
+ * Database responsible for loading and saving data, and executing user requests
+ */
 public class Database {
 
+    /**
+     * the text file reader for this database
+     */
     private TextFileReader textFileReader;
+
+    /**
+     * the text file writer for this database
+     */
     private TextFileWriter textFileWriter;
+
+    /**
+     * the last flight information that was requested by the user
+     */
     private List<Itinerary> lastFlightInfo;
 
+    /**
+     * each line stores:
+     * three-letter-airport-code,city-name
+     */
     private String CITIES_FILENAME = "cities.txt";
+
+    /**
+     * each line stores:
+     * three-letter-airport-code, current-average-delay-time-in-minutes
+     */
     private String DELAY_TIMES_FILENAME = "delay_times.txt";
+
+    /**
+     * each line stores:
+     * three-letter-airport-code,minimum-connection-time-in-minutes
+     */
     private String MINIMUM_CONNECTION_TIMES_FILENAME = "minimum_connection_times.txt";
+
+    /**
+     * each line stores:
+     * origin-airport-code,destination-airport-code,departure-time, arrival-time,flight-number,airfare
+     */
     private String TTA_FLIGHTS_FILENAME = "TTA_flights.txt";
+
+    /**
+     * each line stores:
+     * three-letter-airport-code{,weather,temperature}{1..n}
+     */
     private String WEATHER_TEMPERATURE_FILENAME = "weather_temp.txt";
+
+    /**
+     * default delimiter for separating tokens in the text files
+     */
     private String FILE_DELIMITER = ",";
 
     /**
@@ -29,6 +72,10 @@ public class Database {
      * itinerary in the format described in the SRS document
      */
     private String RESERVATION_FILENAME = "reservations.txt";
+
+    /**
+     * the delimiter for separating tokens in RESERVATION_FILENAME
+     */
     private String RESERVATION_FILE_DELIMITER = ";";
 
     /**
@@ -47,6 +94,7 @@ public class Database {
     private Map<String, List<Reservation>> reservations;
 
     /**
+     * @param path the path the data files are stored in
      * @throws Exception if setting up the database has failed
      */
     public Database(String path) throws Exception{
@@ -59,40 +107,46 @@ public class Database {
         uploadDatabase();
     }
 
+    /**
+     * saves the reservations to the database
+     * @throws IOException if the saving has failed
+     */
     public void saveDatabase() throws IOException {
         String reservationsToSave = "";
+
+        //save reservations for each passenger
         for(String passenger: reservations.keySet()){
             List<Reservation> reservationList = reservations.get(passenger);
 
             int numReservations = reservationList.size();
-            reservationsToSave += passenger + ";" + numReservations;
+            reservationsToSave += passenger + RESERVATION_FILE_DELIMITER + numReservations;
             if(numReservations != 0){
-                reservationsToSave += ";";
+                reservationsToSave += RESERVATION_FILE_DELIMITER;
             }
 
             for(int i=0; i<numReservations; i++){
                 Reservation reservation = reservationList.get(i);
-                reservationsToSave += reservation.getPrice() + "," + reservation.getNumFlights();
+                reservationsToSave += reservation.getPrice() + FILE_DELIMITER + reservation.getNumFlights();
 
                 List<Flight> flights = reservation.getFlights();
                 if(flights.size() > 0){
-                    reservationsToSave += ",";
+                    reservationsToSave += FILE_DELIMITER;
                 }
 
                 int numFlights = flights.size();
                 for(int j=0; j<numFlights; j++){
                     Flight flight = flights.get(j);
-                    reservationsToSave += flight.getFlightNum() + "," + flight.getOrigin() +
-                            "," + flight.getDepartureTime() + "," + flight.getDestination() +
-                            "," + flight.getArrivalTime();
+                    reservationsToSave += flight.getFlightNum() + FILE_DELIMITER + flight.getOrigin() +
+                            FILE_DELIMITER + flight.getDepartureTime() + FILE_DELIMITER + flight.getDestination() +
+                            FILE_DELIMITER + flight.getArrivalTime();
 
                     if(j != numFlights-1){
-                        reservationsToSave += ",";
+                        reservationsToSave += FILE_DELIMITER;
                     }
                 }
 
                 if(i != numReservations-1){
-                    reservationsToSave += ";";
+                    reservationsToSave += RESERVATION_FILE_DELIMITER;
                 }
             }
 
@@ -104,6 +158,10 @@ public class Database {
     }
 
 
+    /**
+     * uploads data from the text files to this database
+     * @throws Exception if the uploading failed
+     */
     private void uploadDatabase() throws Exception{
         uploadAirports();
         uploadFlights();
@@ -111,6 +169,9 @@ public class Database {
     }
 
     /**
+     * uploads airport information from CITIES_FILENAME, DELAY_TIMES_FILENAME,
+     * MINIMUM_CONNECTION_TIMES_FILENAME, and WEATHER_TEMPERATURE_FILENAME
+     *
      * @throws IOException if parsing the cities file failed
      */
     private void uploadAirports() throws Exception{
@@ -194,6 +255,11 @@ public class Database {
         }
     }
 
+
+    /**
+     * uploads flight information from TTA_FLIGHTS_FILENAME
+     * @throws Exception
+     */
     private void uploadFlights() throws Exception{
         flights = new HashMap<>();
 
@@ -224,6 +290,11 @@ public class Database {
         }
     }
 
+
+    /**
+     * uploads reservations from RESERVATION_FILENAME
+     * @throws Exception if unable to upload reservations
+     */
     private void uploadReservations() throws Exception{
         reservations = new HashMap<>();
 
@@ -262,6 +333,20 @@ public class Database {
         }
     }
 
+
+    /**
+     * gets a list of flight itineraries from the given origin to given destination
+     *
+     * @param origin the origin airport
+     * @param destination the destination airport
+     * @param connections max number of additional flights to take from origin to
+     *                    destination. e.g., a connection of zero can have a flight
+     *                    path of A-B, while a connection of one can have a flight
+     *                    path of A-B-C
+     * @param sortOrder the order to sort all the possible itineraries by
+     * @return a message on success/failure of getting flight information and a list
+     *      of itineraries, if successful (null if failed)
+     */
     public FlightInfoResponse getFlightInfo(String origin, String destination, int connections, SortOrder sortOrder){
         if(!airports.containsKey(origin)){
             return new FlightInfoResponse("error,unknown origin", null);
@@ -282,6 +367,11 @@ public class Database {
         return new FlightInfoResponse("successful", itineraries);
     }
 
+
+    /**
+     * @param origin the given airport code
+     * @return the flights that start at the given airport code
+     */
     private List<Flight> getFlights(String origin){
         if(flights.containsKey(origin)){
             return flights.get(origin);
@@ -292,6 +382,13 @@ public class Database {
     }
 
 
+    /**
+     * finds all itineraries that start at the origin and end at the destination
+     * @param origin origin airport code
+     * @param destination destination airport code
+     * @param connections make connections that can be made
+     * @return all itineraries that start at the origin and end at the destination
+     */
     private List<Itinerary> findAllItineraries(String origin, String destination, int connections){
         List<Flight> flightList = getFlights(origin);
         if(flightList == null){
@@ -316,6 +413,17 @@ public class Database {
         return itineraryList;
     }
 
+
+    /**
+     * finds an itinerary from a flight to the destination airport
+     * @param currentFlight the flight to start from
+     * @param destination the destination airport
+     * @param visited set of airport codes that have already been traversed
+     * @param numConnectionsLeft the number of connections left that can be made
+     * @param path the path of flights that have been taken so far
+     * @return the list of itineraries that can be taken to the destination, given
+     *      the currentFlight is taken
+     */
     private List<Itinerary> findItineraryForFlight(Flight currentFlight, String destination,
                                                    Set<String> visited, int numConnectionsLeft,
                                                    List<Flight> path){
@@ -339,7 +447,8 @@ public class Database {
                         flightsCanBeScheduled(currentFlight, flight)){
                     visited.add(newDestination);
                     path.add(flight);
-                    List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
+                    List<Itinerary> itineraryList = findItineraryForFlight(flight, destination,
+                            visited, numConnectionsLeft-1, path);
 
                     if(itineraryList != null){
                         flightItineraries.addAll(itineraryList);
@@ -353,6 +462,18 @@ public class Database {
         return flightItineraries;
     }
 
+
+    /**
+     * Two flights can be scheduled together if...
+     * -the first flight's arrival time is before the second flight's
+     *  departure time
+     * -the time between the first flight's arrival time and the second
+     *  flight's departure time is greater than or equal to the delay+connection
+     *  time of the airport shared between the two flights
+     * @param flight1 the first flight
+     * @param flight2 the second flight
+     * @return if flight1 and flight2 can be scheduled together
+     */
     private boolean flightsCanBeScheduled(Flight flight1, Flight flight2){
         int minuteIntervalBetweenFlights =
                 flight2.getDepartureTime().getTotalMinutes() -
@@ -373,6 +494,15 @@ public class Database {
         }
     }
 
+
+    /**
+     * gets reservation information of the passenger, filtering the reservations
+     * by origin and/or destination (if given)
+     * @param passenger the passenger whose reservations are to be retrieved
+     * @param origin the origin to filter by
+     * @param destination the destination to filter by
+     * @return a message about success/failure and a list of reservations/null, respectively
+     */
     public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){
         List<Reservation> reservationInfo = new ArrayList<>();
         boolean filterByOrigin = !origin.equals("");
@@ -413,6 +543,11 @@ public class Database {
         return new ReservationInfoResponse("successful", reservationInfo);
     }
 
+
+    /**
+     * @param airportCode airport code of the airport of interest
+     * @return error/success message with airport of interest/null, respectively
+     */
     public AirportInfoResponse getAirportInfo(String airportCode){
         if(airports.containsKey(airportCode)){
             Airport airport = airports.get(airportCode);
@@ -424,6 +559,13 @@ public class Database {
     }
 
 
+    /**
+     * reserves a flight for the given passenger
+     * @param id 1-index position of the itinerary shown during the
+     *           last get flight information request
+     * @param passenger the passenger to reserve the flight for
+     * @return message of whether or not the response was successful
+     */
     public Response reserveFlight(int id, String passenger){
         if(lastFlightInfo == null){
             return new Response("error, must get flight information first");
@@ -444,6 +586,16 @@ public class Database {
         }
     }
 
+
+    /**
+     * tries to add a reservation for a passenger. a reservation can
+     * only be added if the origin/destination of the reservation is not
+     * already the origin/destination of another reservation
+     *
+     * @param reservation the reservation to add
+     *
+     * @return whether or not the reservation was added or not
+     */
     private boolean addReservation(Reservation reservation){
         String passenger = reservation.getPassenger();
         if(reservations.containsKey(passenger)){
@@ -465,6 +617,17 @@ public class Database {
         return true;
     }
 
+
+    /**
+     * deletes a reservation for a passenger. the reservation
+     * must start at the origin and end at the destination
+     *
+     * @param passenger the passenger to delete the reservation for
+     * @param origin the origin airport of the reservation's itinerary
+     * @param destination the destination airport of the reservation's itinerary
+     *
+     * @return message of success/failure to delete the reservation
+     */
     public Response deleteReservation(String passenger, String origin, String destination){
         if(!reservations.containsKey(passenger)){
             return new Response("error, reservation not found");

@@ -1,12 +1,21 @@
 package Model.Comparators;
 
 import Model.Itinerary;
-import Model.SortOrder;
 
 import java.util.Comparator;
 
+/**
+ * class for creating Itinerary Comparators
+ */
 public class ItineraryComparatorFactory {
 
+    /**
+     * creates an appropriate Itinerary comparator based on the
+     * given sort order
+     * @param sortOrder the given sort order
+     * @return a comparator that can be used to sort itineraries
+     *      based on the given sort order
+     */
     public static Comparator<Itinerary> makeComparator(SortOrder sortOrder){
         switch(sortOrder){
             case DEPARTURE:

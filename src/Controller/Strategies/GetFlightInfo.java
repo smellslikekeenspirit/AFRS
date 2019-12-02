@@ -6,7 +6,7 @@ import Model.Flight;
 import Model.Itinerary;
 import Model.Database;
 import Model.Responses.FlightInfoResponse;
-import Model.SortOrder;
+import Model.Comparators.SortOrder;
 import java.util.List;
 
 public class GetFlightInfo implements IRequestHandlerStrategy {

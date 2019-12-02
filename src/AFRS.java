@@ -3,8 +3,16 @@ import View.*;
 import Model.Database;
 import java.util.Scanner;
 
+
+/**
+ * The main entry point of this program.
+ */
 public class AFRS {
 
+    /**
+     * Run to start and interact with the system
+     * @param args not used
+     */
     public static void main(String[] args) {
         System.out.println("Initializing AFRS");
         // database will throw exceptions if it fails to load correctly
@@ -27,7 +35,6 @@ public class AFRS {
             database.saveDatabase();
         }
         catch(Exception e) {
-            e.printStackTrace();
             System.out.println("Error: " + e.getMessage());
         }
     }

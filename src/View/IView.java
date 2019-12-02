@@ -4,6 +4,9 @@
 
 package View;
 
+/**
+ * Interface for the View in the MVC
+ */
 public interface IView {
 
     /**

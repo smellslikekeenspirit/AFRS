@@ -8,8 +8,14 @@ import java.io.*;
 import java.util.ArrayList;
 
 
+/**
+ * Layer used to read from text files
+ */
 public class TextFileReader {
 
+    /**
+     * the file to read from
+     */
     private File file;
 
     /**
@@ -20,6 +26,7 @@ public class TextFileReader {
     public TextFileReader(String filename){
         this.file = new File(filename);
     }
+
 
     /**
      * reads the file it has saved a pointer to, collects each line
