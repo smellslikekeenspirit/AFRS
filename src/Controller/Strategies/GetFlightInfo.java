@@ -19,7 +19,6 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
 
-        // parameters are given in a comma-separated list
         String[] parameters = request.split(",");
         // expecting keyword, origin, destination, and optionally
         // connection limit and sort order
@@ -101,18 +100,17 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
             flightInfo += price + "," + numFlights;
             // add all flights attached to the given itinerary
             List<Flight> flights = itinerary.getFlights();
-            Integer flightNum = 1;
             for(Flight flight : flights) {
                 String origin = flight.getOrigin();
                 String departure = flight.getDepartureTime().toString();
                 String destination = flight.getDestination();
                 String arrival = flight.getArrivalTime().toString();
+                String flightNum = Integer.toString(flight.getFlightNum());
                 flightInfo += "," + flightNum;
                 flightInfo += "," + origin;
                 flightInfo += "," + departure;
                 flightInfo += "," + destination;
                 flightInfo += "," + arrival;
-                flightNum++;
             }
             flightInfo += "\n";
         }
