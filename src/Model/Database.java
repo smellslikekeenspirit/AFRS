@@ -312,7 +312,8 @@ public class Database {
         List<Itinerary> flightItineraries = new ArrayList<>();
         List<Flight> flightList = getFlights(currentAirport, destination);
         for(Flight flight: flightList){
-            if(!visited.contains(flight)){
+            if(!visited.contains(flight) &&
+                    flightsCanBeScheduled(currentFlight, flight)){
                 visited.add(flight);
                 path.add(flight);
                 List<Itinerary> itineraryList = findItineraryForFlight(flight, destination, visited, numConnectionsLeft-1, path);
@@ -326,6 +327,26 @@ public class Database {
         }
 
         return flightItineraries;
+    }
+
+    private boolean flightsCanBeScheduled(Flight flight1, Flight flight2){
+        int minuteIntervalBetweenFlights =
+                flight1.getDepartureTime().getTotalMinutes() -
+                flight2.getDepartureTime().getTotalMinutes();
+
+        if(minuteIntervalBetweenFlights < 0){
+            return false;
+        }
+
+        String intermediateAirport = flight1.getDestination();
+        if(airports.containsKey(intermediateAirport)){
+            Airport airport = airports.get(intermediateAirport);
+            int layoverTime = airport.getConnectionTime() + airport.getDelay();
+            return minuteIntervalBetweenFlights >= layoverTime;
+        }
+        else{
+            return false;
+        }
     }
 
     public ReservationInfoResponse getReservationInfo(String passenger, String origin, String destination){

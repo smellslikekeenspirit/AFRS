@@ -44,6 +44,10 @@ public class Time implements Comparable<Time>{
         return false;
     }
 
+    public int getTotalMinutes(){
+        return hour*60 + minute;
+    }
+
 
     @Override
     public int hashCode(){
