@@ -2,12 +2,21 @@ package Controller;
 
 import Controller.Strategies.*;
 
+/**
+ * class for parsing a request
+ */
 public class RequestParser {
     private final String[] RECOGNIZED_KEYWORDS = {"info", "reserve", "retrieve", "delete", "airport"};
 
+    /**
+     * parses a request and assigns an appropriate strategy
+     * @param request request to parse
+     * @param requestHandler requestHandler for assigning a strategy to the parsed request
+     * @return formatted request
+     */
     public String parseRequest(String request, RequestHandler requestHandler) {
         // parameters are expected to be in a comma-separated list
-        String[] parameters = request.split(",");
+        String[] parameters = request.strip().split(",");
 
         // clean up the request parameters so the formatting is consistent
         for(String parameter : parameters) {

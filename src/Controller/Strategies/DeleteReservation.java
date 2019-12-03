@@ -5,7 +5,16 @@ import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
 import Model.Responses.Response;
 
+/**
+ * class for handling deletion of a reservation
+ */
 public class DeleteReservation implements IRequestHandlerStrategy {
+    /**
+     * handles a deleteReservation request
+     * @param request request
+     * @param requestHandler designated requestHandler
+     * @return a formatted response to the request
+     */
     @Override
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
@@ -23,6 +32,12 @@ public class DeleteReservation implements IRequestHandlerStrategy {
         return formatResponse(response);
     }
 
+    /**
+     * formats a string to be written to console with respect to
+     * the parameter response
+     * @param response generic response Object, can be Response or null
+     * @return appropriate String message
+     */
     @Override
     public String formatResponse(Object response) {
         Response convertedResponse = (Response) response;

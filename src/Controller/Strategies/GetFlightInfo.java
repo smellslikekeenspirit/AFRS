@@ -9,12 +9,21 @@ import Model.Responses.FlightInfoResponse;
 import Model.Comparators.SortOrder;
 import java.util.List;
 
+/**
+ * class for handling request about retrieving flight info
+ */
 public class GetFlightInfo implements IRequestHandlerStrategy {
 
     private final int DEFAULT_CONNECTION_LIMIT = 2;
     private final String DEFAULT_SORT_ORDER = "departure";
     private final SortOrder DEFAULT_ENUM_SORT_ORDER = SortOrder.DEPARTURE;
 
+    /**
+     * handles a getFlightInfo request
+     * @param request request
+     * @param requestHandler designated requestHandler
+     * @return a formatted response to the request
+     */
     @Override
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
@@ -79,6 +88,14 @@ public class GetFlightInfo implements IRequestHandlerStrategy {
         return formatResponse(response);
     }
 
+
+    /**
+     * formats a string to be written to console with respect to
+     * the parameter response by extracting required info about a flight
+     * from the response
+     * @param response generic response Object, can be Response or null
+     * @return appropriate String message
+     */
     @Override
     public String formatResponse(Object response) {
         FlightInfoResponse flightInfoResponse = (FlightInfoResponse) response;

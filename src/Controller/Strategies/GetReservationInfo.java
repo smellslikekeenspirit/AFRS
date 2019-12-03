@@ -9,8 +9,17 @@ import Model.Flight;
 import java.util.List;
 import Model.Responses.ReservationInfoResponse;
 
-
+/**
+ * class for handling request about retrieving reservation info
+ */
 public class GetReservationInfo implements IRequestHandlerStrategy {
+
+    /**
+     * handles a getReservationInfo request
+     * @param request request
+     * @param requestHandler designated requestHandler
+     * @return a formatted response to the request
+     */
     @Override
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
@@ -38,7 +47,13 @@ public class GetReservationInfo implements IRequestHandlerStrategy {
         ReservationInfoResponse response = database.getReservationInfo(passenger, origin, destination);
         return formatResponse(response);
     }
-
+    /**
+     * formats a string to be written to console with respect to
+     * the parameter response by extracting required info about a reservation
+     * from the response
+     * @param response generic response Object, can be Response or null
+     * @return appropriate String message
+     */
     @Override
     public String formatResponse(Object response) {
         ReservationInfoResponse reservationInfoResponse = (ReservationInfoResponse) response;

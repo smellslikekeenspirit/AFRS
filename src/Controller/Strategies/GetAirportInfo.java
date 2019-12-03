@@ -6,7 +6,17 @@ import Model.Database;
 import Model.Airport;
 import Model.Responses.AirportInfoResponse;
 
+/**
+ * class for handling request about retrieving airport info
+ */
 public class GetAirportInfo implements IRequestHandlerStrategy {
+
+    /**
+     * handles a getAirportInfo request
+     * @param request request
+     * @param requestHandler designated requestHandler
+     * @return a formatted response to the request
+     */
     @Override
     public String handleRequest(String request, RequestHandler requestHandler) {
         requestHandler.setState(new NoPartialRequests());
@@ -23,6 +33,13 @@ public class GetAirportInfo implements IRequestHandlerStrategy {
         return formatResponse(response);
     }
 
+    /**
+     * formats a string to be written to console with respect to
+     * the parameter response by extracting required info about an airport
+     * from the response
+     * @param response generic response Object, can be Response or null
+     * @return appropriate String message
+     */
     @Override
     public String formatResponse(Object response) {
         AirportInfoResponse airportInfoResponse = (AirportInfoResponse) response;
