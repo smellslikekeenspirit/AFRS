@@ -1,8 +1,10 @@
 package Controller;
+
 import Controller.States.IRequestHandlerState;
 import Controller.States.NoPartialRequests;
 import Controller.Strategies.IRequestHandlerStrategy;
 import Model.Database;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 
 /**
  * class that handles designation of all requests to their appropriate handlers
@@ -17,8 +19,11 @@ public class RequestHandler {
     /**
      * constructor for requestHandler
      * @param db database
+     * suppressed initialization warnings because the strategy field will be handled later, and
+     * not through the constructor nor through helper methods called by the constructor
      */
-    public RequestHandler( Database db ) {
+    @SuppressWarnings("initialization")
+    public RequestHandler(Database db ) {
         this.requestParser = new RequestParser();
         this.partialRequests = "";
         this.database = db;
@@ -93,6 +98,7 @@ public class RequestHandler {
      * @param request request to be handled
      * @return result of handleRequest, which is a string response
      */
+    @RequiresNonNull("this.strategy")
     public String executeStrategy(String request) {
         return this.strategy.handleRequest(request, this);
     }

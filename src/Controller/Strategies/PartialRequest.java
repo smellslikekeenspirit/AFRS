@@ -1,6 +1,7 @@
 package Controller.Strategies;
 import Controller.RequestHandler;
 import Controller.States.HasPartialRequests;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
@@ -27,7 +28,7 @@ public class PartialRequest implements IRequestHandlerStrategy {
      * @return appropriate String message
      */
     @Override
-    public String formatResponse(Object response) {
+    public String formatResponse(@Nullable Object response) {
         return "partial-request";
     }
 }

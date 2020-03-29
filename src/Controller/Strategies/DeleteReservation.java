@@ -1,8 +1,8 @@
 package Controller.Strategies;
 
-import Model.Database;
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
+import Model.Database;
 import Model.Responses.Response;
 
 /**

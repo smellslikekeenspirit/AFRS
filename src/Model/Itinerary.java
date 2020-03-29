@@ -1,11 +1,17 @@
 package Model;
 
+import org.checkerframework.checker.initialization.qual.UnderInitialization;
+import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * An itinerary path of flights that can be taken consecutively
+ * Nullness warnings were suppressed because a the methods that return either String or null go through a
+ * long chain of events at the end of which, the null values get handled via code
  */
+@SuppressWarnings("nullness")
 public class Itinerary {
 
     /**
@@ -53,7 +59,8 @@ public class Itinerary {
      * @param flights the given list of flights
      * @return copy of the given list of flights
      */
-    private List<Flight> copyFlightList(List<Flight> flights){
+    @EnsuresNonNull("#1")
+    private List<Flight> copyFlightList(@UnderInitialization(Object.class) Itinerary this, List<Flight> flights){
         List<Flight> copy = new ArrayList<>();
         copy.addAll(flights);
         return copy;

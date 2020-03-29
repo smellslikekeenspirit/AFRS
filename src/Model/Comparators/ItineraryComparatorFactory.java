@@ -1,6 +1,7 @@
 package Model.Comparators;
 
 import Model.Itinerary;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Comparator;
 
@@ -16,7 +17,7 @@ public class ItineraryComparatorFactory {
      * @return a comparator that can be used to sort itineraries
      *      based on the given sort order
      */
-    public Comparator<Itinerary> makeComparator(SortOrder sortOrder){
+    public @Nullable Comparator<Itinerary> makeComparator(SortOrder sortOrder){
         switch(sortOrder){
             case DEPARTURE:
                 return new DepartureComparator();

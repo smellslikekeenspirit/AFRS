@@ -1,11 +1,19 @@
 package Model;
 
-import java.io.IOException;
-import java.util.*;
-
 import Model.Comparators.ItineraryComparatorFactory;
 import Model.Comparators.SortOrder;
-import Model.Responses.*;
+import Model.Responses.AirportInfoResponse;
+import Model.Responses.FlightInfoResponse;
+import Model.Responses.ReservationInfoResponse;
+import Model.Responses.Response;
+import org.checkerframework.checker.initialization.qual.UnderInitialization;
+import org.checkerframework.checker.initialization.qual.UnknownInitialization;
+import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Database responsible for loading and saving data, and executing user requests
@@ -15,17 +23,17 @@ public class Database {
     /**
      * the text file reader for this database
      */
-    private TextFileReader textFileReader;
+    private @Nullable TextFileReader textFileReader;
 
     /**
      * the text file writer for this database
      */
-    private TextFileWriter textFileWriter;
+    private @Nullable TextFileWriter textFileWriter;
 
     /**
      * the last flight information that was requested by the user
      */
-    private List<Itinerary> lastFlightInfo;
+    private @Nullable List<Itinerary> lastFlightInfo;
 
     /**
      * each line stores:
@@ -162,7 +170,8 @@ public class Database {
      * uploads data from the text files to this database
      * @throws Exception if the uploading failed
      */
-    private void uploadDatabase() throws Exception{
+    @EnsuresNonNull({"airports", "flights", "reservations"})
+    private void uploadDatabase(@UnderInitialization(Object.class) Database this) throws Exception{
         uploadAirports();
         uploadFlights();
         uploadReservations();
@@ -174,7 +183,8 @@ public class Database {
      *
      * @throws IOException if parsing the cities file failed
      */
-    private void uploadAirports() throws Exception{
+    @EnsuresNonNull({"airports"})
+    private void uploadAirports(@UnderInitialization(Object.class) Database this) throws Exception{
         airports = new HashMap<>();
 
         //first get the airport codes and their city names
@@ -260,7 +270,8 @@ public class Database {
      * uploads flight information from TTA_FLIGHTS_FILENAME
      * @throws Exception
      */
-    private void uploadFlights() throws Exception{
+    @EnsuresNonNull({"flights"})
+    private void uploadFlights(@UnderInitialization(Object.class) Database this) throws Exception{
         flights = new HashMap<>();
 
         textFileReader = new TextFileReader(TTA_FLIGHTS_FILENAME);
@@ -295,7 +306,8 @@ public class Database {
      * uploads reservations from RESERVATION_FILENAME
      * @throws Exception if unable to upload reservations
      */
-    private void uploadReservations() throws Exception{
+    @EnsuresNonNull({"reservations"})
+    private void uploadReservations(@UnderInitialization(Object.class) Database this) throws Exception{
         reservations = new HashMap<>();
 
         textFileReader = new TextFileReader(RESERVATION_FILENAME);
@@ -373,7 +385,7 @@ public class Database {
      * @param origin the given airport code
      * @return the flights that start at the given airport code
      */
-    private List<Flight> getFlights(String origin){
+    @Nullable private List<Flight> getFlights(String origin){
         if(flights.containsKey(origin)){
             return flights.get(origin);
         }
@@ -425,7 +437,7 @@ public class Database {
      * @return the list of itineraries that can be taken to the destination, given
      *      the currentFlight is taken
      */
-    private List<Itinerary> findItineraryForFlight(Flight currentFlight, String destination,
+    @Nullable private List<Itinerary> findItineraryForFlight(Flight currentFlight, String destination,
                                                    Set<String> visited, int numConnectionsLeft,
                                                    List<Flight> path){
         String currentAirport = currentFlight.getDestination();
@@ -597,7 +609,9 @@ public class Database {
      *
      * @return whether or not the reservation was added or not
      */
-    private boolean addReservation(Reservation reservation){
+    @RequiresNonNull({"reservations"})
+    // UnknownInitialization was used because this method is invoked both during initialization and after
+    private boolean addReservation(@UnknownInitialization(Object.class) Database this, Reservation reservation) {
         String passenger = reservation.getPassenger();
         if(reservations.containsKey(passenger)){
             List<Reservation> reservationList = reservations.get(passenger);

@@ -1,7 +1,6 @@
 package Model;
 
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * represents a single Airport

@@ -1,7 +1,6 @@
 package Controller.States;
 
 import Controller.RequestHandler;
-import Controller.States.IRequestHandlerState;
 
 
 /**

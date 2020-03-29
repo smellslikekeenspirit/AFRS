@@ -1,5 +1,7 @@
 package Model;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Flight represents a single flight between 2 airports
  */
@@ -45,8 +47,13 @@ public class Flight {
      * @param flightNum this flight's number
      */
     public Flight(String origin, String destination, Time departureTime,
-                  Time arrivalTime, int flightNum){
-        setFields(origin, destination, departureTime, arrivalTime, flightNum, 0);
+                  Time arrivalTime, int flightNum) {
+        this.origin = origin;
+        this.destination = destination;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.flightNum = flightNum;
+        this.price = 0;
     }
 
 
@@ -62,7 +69,12 @@ public class Flight {
      */
     public Flight(String origin, String destination, Time departureTime,
                   Time arrivalTime, int flightNum, float price){
-        setFields(origin, destination, departureTime, arrivalTime, flightNum, price);
+        this.origin = origin;
+        this.destination = destination;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.flightNum = flightNum;
+        this.price = price;
     }
 
     /**
@@ -116,7 +128,7 @@ public class Flight {
      * @return whether this and obj are equal Flights
      */
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(@Nullable Object obj){
         if(this == obj){
             return true;
         }

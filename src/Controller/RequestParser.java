@@ -16,7 +16,8 @@ public class RequestParser {
      */
     public String parseRequest(String request, RequestHandler requestHandler) {
         // parameters are expected to be in a comma-separated list
-        String[] parameters = request.strip().split(",");
+        // strip method is absent in Java 8
+        String[] parameters = request.split(",");
 
         // clean up the request parameters so the formatting is consistent
         for(String parameter : parameters) {
