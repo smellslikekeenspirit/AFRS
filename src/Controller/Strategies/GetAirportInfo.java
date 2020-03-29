@@ -2,8 +2,8 @@ package Controller.Strategies;
 
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
-import Model.Airport;
 import Model.Database;
+import Model.Airport;
 import Model.Responses.AirportInfoResponse;
 
 /**

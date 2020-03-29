@@ -2,13 +2,12 @@ package Controller.Strategies;
 
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
-import Model.Database;
-import Model.Flight;
 import Model.Itinerary;
 import Model.Reservation;
-import Model.Responses.ReservationInfoResponse;
-
+import Model.Database;
+import Model.Flight;
 import java.util.List;
+import Model.Responses.ReservationInfoResponse;
 
 /**
  * class for handling request about retrieving reservation info

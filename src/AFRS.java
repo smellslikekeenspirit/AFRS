@@ -1,8 +1,6 @@
 import Controller.RequestHandler;
+import View.*;
 import Model.Database;
-import View.ConsoleWriter;
-import View.IView;
-
 import java.util.Scanner;
 
 

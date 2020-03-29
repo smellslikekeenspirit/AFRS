@@ -1,7 +1,5 @@
 package Model.Comparators;
-
 import Model.Itinerary;
-
 import java.util.Comparator;
 
 /**
