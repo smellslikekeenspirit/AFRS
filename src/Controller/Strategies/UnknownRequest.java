@@ -2,6 +2,7 @@ package Controller.Strategies;
 
 import Controller.RequestHandler;
 import Controller.States.NoPartialRequests;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 /**
@@ -29,7 +30,7 @@ public class UnknownRequest implements IRequestHandlerStrategy {
      * @return appropriate String message
      */
     @Override
-    public String formatResponse(Object response) {
+    public String formatResponse(@Nullable Object response) {
         return "error, unknown request";
     }
 }

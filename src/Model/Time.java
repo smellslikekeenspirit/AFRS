@@ -1,5 +1,7 @@
 package Model;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * AFRS representation of time
  */
@@ -64,7 +66,7 @@ public class Time implements Comparable<Time>{
      * @return whether this and the given obj are equal Times
      */
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(@Nullable Object obj){
         if(this == obj){
             return true;
         }
